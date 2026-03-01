@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0B0E11;
+  --color-foreground: #F1F5F9;
+  --color-surface: #141922;
+  --color-surface-elevated: #1C2333;
+  --color-border: #2A3346;
+  --color-positive: #22C55E;
+  --color-negative: #EF4444;
+  --color-caution: #F59E0B;
+  --color-neutral: #6B7280;
+  --color-accent: #3B82F6;
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
+  --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", "Menlo", "Monaco", "Consolas", monospace;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Smooth scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+/* Recharts dark theme overrides */
+.recharts-cartesian-axis-tick-value {
+  fill: #64748B !important;
+  font-size: 11px !important;
+}
+.recharts-cartesian-grid line {
+  stroke: #1C2333 !important;
+}
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
