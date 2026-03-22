@@ -74,6 +74,15 @@ const FRED_SERIES: string[] = [
   "VIXCLS",
   "MOVEINDEX",
   "SKEWINDX",
+  // Inflation
+  "WPSFD49207",   // PPI Final Demand YoY
+  "PCEPI",        // PCE Headline
+  // Growth
+  "UMCSENT",      // Consumer Sentiment
+  "DGORDER",      // Durable Goods Orders
+  "TCU",          // Capacity Utilization: Total Industry
+  // Policy
+  "MORTGAGE30US", // 30Y Mortgage Rate
 ];
 
 const STOOQ_SERIES: string[] = [

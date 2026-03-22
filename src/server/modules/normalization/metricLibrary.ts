@@ -143,9 +143,9 @@ export function normalizeMetrics(raw: RawDataBundle): NormalizedMetrics {
       description: "Proxy for near-term GDP nowcast.", interpretation: "Rising values suggest improving near-term growth.",
     }, f.GDPNOW ?? []),
     buildMetric({
-      id: "lei-yoy", name: "Leading Index YoY", category: "growth", frequency: "weekly", unit: "%",
-      description: "Leading index YoY proxy.", interpretation: "Deep negatives can signal below-trend growth.",
-    }, yoyFromSeries(f.USSLIND ?? [], 52)),
+      id: "lei-yoy", name: "Leading Index YoY", category: "growth", frequency: "monthly", unit: "%",
+      description: "Philadelphia Fed Leading Index YoY.", interpretation: "Deep negatives can signal below-trend growth.",
+    }, yoyFromSeries(f.USSLIND ?? [], 12)),
     buildMetric({
       id: "unemp-rate", name: "Unemployment Rate", category: "growth", frequency: "monthly", unit: "%",
       description: "US unemployment (U-3).", interpretation: "Persistent rises imply labor cooling.", invertForScore: true,
@@ -162,9 +162,23 @@ export function normalizeMetrics(raw: RawDataBundle): NormalizedMetrics {
       id: "bldg-permits", name: "Building Permits", category: "growth", frequency: "monthly", unit: "units",
       description: "Building permits.", interpretation: "Forward-looking indicator for construction activity.",
     }, f.PERMIT ?? []),
+    buildMetric({
+      id: "consumer-sentiment", name: "Consumer Sentiment", category: "growth", frequency: "monthly", unit: "index",
+      description: "UMich Consumer Sentiment index.", interpretation: "Sustained weakness signals slower consumer spending ahead.", thresholdLine: 80,
+    }, f.UMCSENT ?? []),
+    buildMetric({
+      id: "durable-goods-yoy", name: "Durable Goods Orders YoY", category: "growth", frequency: "monthly", unit: "%",
+      description: "Manufacturers' new orders for durable goods, YoY.", interpretation: "Leads capex and manufacturing cycles.",
+    }, yoyFromSeries(f.DGORDER ?? [], 12)),
+    buildMetric({
+      id: "capacity-util", name: "Capacity Utilization", category: "growth", frequency: "monthly", unit: "%",
+      description: "Total industry capacity utilization rate.", interpretation: "Rising above 80% signals potential inflation from supply constraints.", thresholdLine: 80,
+    }, f.TCU ?? []),
   ];
 
   const inflation: MetricWithData[] = [
+    buildMetric({ id: "ppi-final-demand-yoy", name: "PPI Final Demand YoY", category: "inflation", frequency: "monthly", unit: "%", description: "Producer Price Index (Final Demand) YoY.", interpretation: "Upstream price pressure that tends to lead CPI by 1-3 months." }, yoyFromSeries(f.WPSFD49207 ?? [], 12)),
+    buildMetric({ id: "pce-headline-yoy", name: "PCE Headline YoY", category: "inflation", frequency: "monthly", unit: "%", description: "PCE Headline YoY.", interpretation: "Broad consumer spending deflator; shows energy and food impulse vs core." }, yoyFromSeries(f.PCEPI ?? [], 12)),
     buildMetric({ id: "cpi-headline-yoy", name: "CPI Headline YoY", category: "inflation", frequency: "monthly", unit: "%", description: "CPI headline YoY.", interpretation: "Broad inflation pressure." }, yoyFromSeries(f.CPIAUCSL ?? [], 12)),
     buildMetric({ id: "cpi-core-yoy", name: "CPI Core YoY", category: "inflation", frequency: "monthly", unit: "%", description: "Core CPI YoY.", interpretation: "Underlying inflation trend." }, yoyFromSeries(f.CPILFESL ?? [], 12)),
     buildMetric({ id: "pce-core-yoy", name: "Core PCE YoY", category: "inflation", frequency: "monthly", unit: "%", description: "Core PCE YoY.", interpretation: "Fed-preferred core inflation." }, yoyFromSeries(f.PCEPILFE ?? [], 12)),
@@ -178,7 +192,7 @@ export function normalizeMetrics(raw: RawDataBundle): NormalizedMetrics {
 
   const policy: MetricWithData[] = [
     buildMetric({ id: "fed-funds", name: "Fed Funds Rate", category: "policy_rates", frequency: "daily", unit: "%", description: "Target upper bound.", interpretation: "Higher rates are more restrictive." }, f.DFEDTARU ?? []),
-    buildMetric({ id: "policy-path-12m", name: "Policy Path 12M Proxy", category: "policy_rates", frequency: "daily", unit: "%", description: "12M implied policy path proxy.", interpretation: "Falling path implies expected easing." }, f.DGS2 ?? []),
+    buildMetric({ id: "policy-path-12m", name: "Policy Path 12M Proxy", category: "policy_rates", frequency: "daily", unit: "%", description: "2Y yield minus current Fed Funds rate — market-implied rate change over 12 months.", interpretation: "Negative means market expects cuts; positive means expected hikes.", thresholdLine: 0 }, mapDiffSeries(f.DGS2 ?? [], f.DFEDTARU ?? [])),
     buildMetric({ id: "policy-surprise", name: "Policy Surprise", category: "policy_rates", frequency: "event-driven", unit: "bps", description: "Event-driven policy change proxy.", interpretation: "Positive surprise is hawkish." }, buildPolicySurpriseSeries(f.DFEDTARU ?? [])),
     buildMetric({ id: "ust-2y", name: "UST 2Y Yield", category: "policy_rates", frequency: "daily", unit: "%", description: "2Y treasury yield.", interpretation: "Sensitive to policy expectations." }, f.DGS2 ?? []),
     buildMetric({ id: "ust-10y", name: "UST 10Y Yield", category: "policy_rates", frequency: "daily", unit: "%", description: "10Y treasury yield.", interpretation: "Growth + inflation + term premium." }, f.DGS10 ?? []),
@@ -186,6 +200,7 @@ export function normalizeMetrics(raw: RawDataBundle): NormalizedMetrics {
     buildMetric({ id: "spread-3m10y", name: "3m10y Spread", category: "policy_rates", frequency: "daily", unit: "%", description: "10Y-3M spread.", interpretation: "Sustained inversion is a classic recession signal.", thresholdLine: 0 }, mapDiffSeries(f.DGS10 ?? [], f.DGS3MO ?? [])),
     buildMetric({ id: "tips-10y", name: "10Y TIPS Real Yield", category: "policy_rates", frequency: "daily", unit: "%", description: "10Y real yield.", interpretation: "Higher real yields tighten conditions." }, f.DFII10 ?? []),
     buildMetric({ id: "term-premium", name: "Term Premium Proxy", category: "policy_rates", frequency: "daily", unit: "%", description: "Term premium proxy.", interpretation: "Rising term premium can lift long-end yields." }, f.THREEFYTP10 ?? []),
+    buildMetric({ id: "mortgage-rate-30y", name: "30Y Mortgage Rate", category: "policy_rates", frequency: "weekly", unit: "%", description: "Freddie Mac 30Y fixed mortgage rate.", interpretation: "Measures policy transmission to the housing market." }, f.MORTGAGE30US ?? []),
   ];
 
   const liquidity: MetricWithData[] = [
@@ -219,7 +234,7 @@ export function normalizeMetrics(raw: RawDataBundle): NormalizedMetrics {
     buildMetric({ id: "cdx-hy-proxy", name: "CDX HY Proxy", category: "risk_sentiment", frequency: "daily", unit: "bps", description: "Credit risk pricing proxy.", interpretation: "Higher means worsening credit conditions.", invertForScore: true }, f.BAMLH0A0HYM2 ?? []),
     buildMetric({ id: "put-call-proxy", name: "Put/Call Proxy", category: "risk_sentiment", frequency: "daily", unit: "index", description: "SKEW-based hedging proxy.", interpretation: "Higher values can imply stronger tail hedging demand.", invertForScore: true }, f.SKEWINDX ?? []),
     buildMetric({ id: "advance-decline-proxy", name: "Advance/Decline Proxy", category: "risk_sentiment", frequency: "daily", unit: "%", description: "Breadth proxy of symbols above 200DMA.", interpretation: "Higher breadth confirms risk appetite." }, breadth),
-    buildMetric({ id: "pct-spx-200dma", name: "% S&P Above 200DMA Proxy", category: "risk_sentiment", frequency: "daily", unit: "%", description: "Share of tracked symbols above 200DMA.", interpretation: "Higher values indicate stronger internal trend support." }, breadth),
+    buildMetric({ id: "pct-spx-200dma", name: "SPY vs 200DMA", category: "risk_sentiment", frequency: "daily", unit: "%", description: "Whether SPY is trading above its 200-day moving average (100) or below (0).", interpretation: "100 = market in uptrend; 0 = market in downtrend." }, movingAverageSignal(cleanSeries(s["spy.us"] ?? []), 200)),
     buildMetric({ id: "hyg-ief-ratio", name: "HYG/IEF Ratio", category: "risk_sentiment", frequency: "daily", unit: "ratio", description: "Risk-on ratio.", interpretation: "Rising indicates risk-on appetite." }, mapRatioSeries(s["hyg.us"] ?? [], s["ief.us"] ?? [])),
     buildMetric({ id: "cyc-def-ratio", name: "Cyclical/Defensive Ratio", category: "risk_sentiment", frequency: "daily", unit: "ratio", description: "Cyclicals vs defensives.", interpretation: "Rising indicates pro-growth leadership." }, mapRatioSeries(s["xly.us"] ?? [], s["xlp.us"] ?? [])),
   ];
