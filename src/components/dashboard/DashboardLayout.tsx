@@ -13,21 +13,14 @@ import Card from "@/components/ui/Card";
 import TopNav from "@/components/app/TopNav";
 import ScoreDrilldownModal from "./ScoreDrilldownModal";
 import { CompositeScore } from "@/types/scores";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 const RATES_IDS = new Set(["ust-2y", "ust-10y", "spread-2s10s", "spread-3m10y"]);
 
-export default function DashboardLayout({
-  scores,
-  regimeTrail,
-  growthMetrics,
-  inflationMetrics,
-  policyMetrics,
-  liquidityMetrics,
-  riskMetrics,
-  heatmapAssets,
-  educationalNotes,
-  whatChanged = [],
-}: DashboardData) {
+export default function DashboardLayout(initialData: DashboardData) {
+  const { data, lastUpdated, isRefreshing } = useDashboardData(initialData);
+  const { scores, regimeTrail, growthMetrics, inflationMetrics, policyMetrics, liquidityMetrics, riskMetrics, heatmapAssets, educationalNotes, whatChanged = [] } = data;
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedScore, setSelectedScore] = useState<CompositeScore | null>(null);
 
@@ -46,26 +39,35 @@ export default function DashboardLayout({
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-text-primary font-semibold text-xl">Macro Dashboard</h1>
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface transition-colors text-sm"
-            aria-label="Open educational panel"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-text-muted">
+              {isRefreshing ? (
+                <span className="animate-pulse">Refreshing…</span>
+              ) : (
+                <>Updated {lastUpdated.toLocaleTimeString()}</>
+              )}
+            </span>
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface transition-colors text-sm"
+              aria-label="Open educational panel"
             >
-              <path d="M2 3h5a2 2 0 0 1 2 2v10a1.5 1.5 0 0 0-1.5-1.5H2V3z" />
-              <path d="M16 3h-5a2 2 0 0 0-2 2v10a1.5 1.5 0 0 1 1.5-1.5H16V3z" />
-            </svg>
-            <span className="hidden sm:inline">Learn</span>
-          </button>
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 18 18"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M2 3h5a2 2 0 0 1 2 2v10a1.5 1.5 0 0 0-1.5-1.5H2V3z" />
+                <path d="M16 3h-5a2 2 0 0 0-2 2v10a1.5 1.5 0 0 1 1.5-1.5H16V3z" />
+              </svg>
+              <span className="hidden sm:inline">Learn</span>
+            </button>
+          </div>
         </div>
         <div className="mb-4">
           <TopNav />

@@ -1,5 +1,5 @@
 import TopNav from "@/components/app/TopNav";
-import BigPictureBoard from "@/components/dashboard/BigPictureBoard";
+import BigPictureClient from "@/components/dashboard/BigPictureClient";
 import { dataProvider } from "@/data";
 
 export default async function BigPicturePage() {
@@ -17,15 +17,7 @@ export default async function BigPicturePage() {
 
         <TopNav />
 
-        <BigPictureBoard
-          scores={data.scores}
-          growthMetrics={data.growthMetrics}
-          inflationMetrics={data.inflationMetrics}
-          policyMetrics={data.policyMetrics}
-          liquidityMetrics={data.liquidityMetrics}
-          riskMetrics={data.riskMetrics}
-          heatmapAssets={data.heatmapAssets}
-        />
+        <BigPictureClient {...data} />
       </div>
     </div>
   );
