@@ -11,15 +11,17 @@ interface KPIStripProps {
 
 export default function KPIStrip({ scores, onScoreClick }: KPIStripProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
+    <div className="grid grid-cols-2 gap-2 lg:grid-cols-5">
       {scores.map((score, idx) => (
         <div
           key={score.id}
-          className={
+          className={[
+            "animate-slide-up",
             idx === scores.length - 1 && scores.length % 2 !== 0
               ? "col-span-2 lg:col-span-1"
-              : ""
-          }
+              : "",
+          ].join(" ")}
+          style={{ animationDelay: `${idx * 55}ms` }}
         >
           <KPICard score={score} onClick={() => onScoreClick?.(score)} />
         </div>

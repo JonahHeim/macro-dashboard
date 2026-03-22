@@ -47,3 +47,26 @@ body {
 .recharts-tooltip-wrapper {
   outline: none !important;
 }
+
+/* ── Entrance / transition animations ── */
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* Value pop: re-triggers via React key change on data refresh */
+@keyframes valuePop {
+  from { opacity: 0.3; transform: scale(0.94) translateY(3px); }
+  to   { opacity: 1;   transform: scale(1)    translateY(0);   }
+}
+
+/* Soft beacon pulse around the current regime dot */
+@keyframes beaconRing {
+  0%   { transform: scale(1);   opacity: 0.8; }
+  70%  { transform: scale(2.4); opacity: 0;   }
+  100% { transform: scale(2.4); opacity: 0;   }
+}
+
+.animate-slide-up  { animation: slideUpFade 0.35s ease-out both; }
+.animate-value-pop { animation: valuePop   0.25s ease-out both; }
+.animate-beacon    { animation: beaconRing 1.8s ease-out infinite; }

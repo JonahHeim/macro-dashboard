@@ -43,11 +43,25 @@ export default function DashboardLayout(initialData: DashboardData) {
               Macro Terminal
             </span>
             <span className="text-border-strong">│</span>
-            <span className="text-text-muted text-[11px] font-mono">
+            <span className="text-text-muted text-[11px] font-mono flex items-center gap-1.5">
               {isRefreshing ? (
-                <span className="animate-pulse text-caution">REFRESHING...</span>
+                <>
+                  {/* Amber pulse when refreshing */}
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-caution opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-caution" />
+                  </span>
+                  <span className="animate-pulse text-caution">REFRESHING...</span>
+                </>
               ) : (
-                <>DATA AS OF {lastUpdated.toLocaleTimeString()}</>
+                <>
+                  {/* Green steady pulse = live data */}
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-positive opacity-40" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
+                  </span>
+                  DATA AS OF {lastUpdated.toLocaleTimeString()}
+                </>
               )}
             </span>
           </div>
