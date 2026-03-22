@@ -18,8 +18,8 @@ export default function TopNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="overflow-x-auto">
-      <div className="inline-flex min-w-full items-center gap-2 rounded-lg border border-border bg-surface p-1">
+    <nav className="border-b border-border-strong overflow-x-auto">
+      <div className="inline-flex min-w-full items-end gap-0">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -28,8 +28,8 @@ export default function TopNav() {
               href={item.href}
               className={
                 isActive
-                  ? "rounded-md bg-accent/20 px-3 py-1.5 text-xs font-medium text-accent"
-                  : "rounded-md px-3 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-elevated hover:text-text-primary"
+                  ? "px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.1em] text-caution border-b-2 border-caution whitespace-nowrap -mb-px"
+                  : "px-4 py-2 text-[11px] font-medium uppercase tracking-[0.1em] text-text-muted hover:text-text-secondary border-b-2 border-transparent whitespace-nowrap -mb-px transition-colors"
               }
             >
               {item.label}

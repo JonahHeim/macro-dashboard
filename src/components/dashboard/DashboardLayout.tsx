@@ -35,57 +35,62 @@ export default function DashboardLayout(initialData: DashboardData) {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-[1920px] mx-auto px-4 py-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-text-primary font-semibold text-xl">Macro Dashboard</h1>
+      <div className="max-w-[1920px] mx-auto px-3 py-3">
+        {/* Terminal header bar */}
+        <div className="flex items-center justify-between py-2 border-b border-border-strong mb-0">
           <div className="flex items-center gap-3">
-            <span className="text-xs text-text-muted">
+            <span className="text-caution font-mono font-bold text-sm tracking-widest uppercase">
+              Macro Terminal
+            </span>
+            <span className="text-border-strong">│</span>
+            <span className="text-text-muted text-[11px] font-mono">
               {isRefreshing ? (
-                <span className="animate-pulse">Refreshing…</span>
+                <span className="animate-pulse text-caution">REFRESHING...</span>
               ) : (
-                <>Updated {lastUpdated.toLocaleTimeString()}</>
+                <>DATA AS OF {lastUpdated.toLocaleTimeString()}</>
               )}
             </span>
-            <button
-              onClick={() => setDrawerOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface transition-colors text-sm"
-              aria-label="Open educational panel"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M2 3h5a2 2 0 0 1 2 2v10a1.5 1.5 0 0 0-1.5-1.5H2V3z" />
-                <path d="M16 3h-5a2 2 0 0 0-2 2v10a1.5 1.5 0 0 1 1.5-1.5H16V3z" />
-              </svg>
-              <span className="hidden sm:inline">Learn</span>
-            </button>
           </div>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1 border border-border text-text-muted hover:text-text-secondary hover:border-border-strong transition-colors text-[11px] font-mono uppercase tracking-wider"
+            aria-label="Open educational panel"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 18 18"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2 3h5a2 2 0 0 1 2 2v10a1.5 1.5 0 0 0-1.5-1.5H2V3z" />
+              <path d="M16 3h-5a2 2 0 0 0-2 2v10a1.5 1.5 0 0 1 1.5-1.5H16V3z" />
+            </svg>
+            <span className="hidden sm:inline">Learn</span>
+          </button>
         </div>
-        <div className="mb-4">
+
+        {/* Tab navigation */}
+        <div className="mb-3">
           <TopNav />
         </div>
 
         {/* Dashboard grid */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {/* 1. KPI strip */}
           <KPIStrip scores={scores} onScoreClick={setSelectedScore} />
 
           {/* 1b. What changed summary */}
           {whatChanged.length > 0 && (
             <Card title="What Changed">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5">
                 {whatChanged.slice(0, 3).map((item) => (
                   <div
                     key={item}
-                    className="rounded-md border border-border bg-surface-elevated px-3 py-2 text-xs text-text-secondary"
+                    className="border border-border bg-surface-elevated px-2 py-1.5 text-[11px] text-text-secondary font-mono"
                   >
                     {item}
                   </div>
@@ -95,7 +100,7 @@ export default function DashboardLayout(initialData: DashboardData) {
           )}
 
           {/* 2. Regime + Rates */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             <RegimeQuadrant
               regimeTrail={regimeTrail}
               currentGrowth={growthScore?.value ?? 0}
@@ -105,7 +110,7 @@ export default function DashboardLayout(initialData: DashboardData) {
           </div>
 
           {/* 3. Growth + Inflation */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             <GrowthPanel metrics={growthMetrics} />
             <InflationPanel metrics={inflationMetrics} />
           </div>

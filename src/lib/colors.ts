@@ -34,24 +34,25 @@ export function getChangeColor(value: number, invert = false): string {
   return "text-neutral";
 }
 
+// TradingView-palette heatmap (pine green / tomato red)
 export function getHeatmapCellStyle(value: number): { bg: string; text: string } {
   const abs = Math.abs(value);
-  const intensity = Math.min(abs / 5, 1); // normalize to 5% max
+  const intensity = Math.min(abs / 5, 1);
 
   if (value > 0.05) {
     return {
-      bg: `rgba(34, 197, 94, ${0.08 + intensity * 0.35})`,
-      text: intensity > 0.3 ? "#22C55E" : "#86EFAC",
+      bg: `rgba(38, 166, 154, ${0.08 + intensity * 0.38})`,
+      text: intensity > 0.3 ? "#26A69A" : "#4DB6AC",
     };
   }
   if (value < -0.05) {
     return {
-      bg: `rgba(239, 68, 68, ${0.08 + intensity * 0.35})`,
-      text: intensity > 0.3 ? "#EF4444" : "#FCA5A5",
+      bg: `rgba(239, 83, 80, ${0.08 + intensity * 0.38})`,
+      text: intensity > 0.3 ? "#EF5350" : "#EF9A9A",
     };
   }
   return {
     bg: "transparent",
-    text: "#6B7280",
+    text: "#434651",
   };
 }

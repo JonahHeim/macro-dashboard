@@ -52,61 +52,64 @@ export default function MetricChart({ metric, height = 100 }: MetricChartProps) 
 
   return (
     <div>
+      {/* Header row */}
       <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-2">
-          <span className="text-text-secondary text-sm font-medium">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-text-secondary text-[11px] font-medium truncate">
             {metric.name}
           </span>
           <div
-            className="relative"
+            className="relative flex-shrink-0"
             onMouseEnter={() => setShowInfo(true)}
             onMouseLeave={() => setShowInfo(false)}
           >
             <button
               type="button"
-              className="h-4 w-4 rounded-full border border-border text-[10px] leading-none text-text-muted hover:text-text-secondary"
+              className="text-text-muted text-[10px] leading-none hover:text-text-secondary"
               aria-label={`About ${metric.name}`}
               aria-expanded={showInfo}
             >
-              i
+              ⓘ
             </button>
             {showInfo && (
-              <div className="absolute left-0 top-5 z-20 w-64 rounded-md border border-border bg-surface-elevated p-2 text-xs shadow-lg">
+              <div className="absolute left-0 top-4 z-20 w-64 border border-border bg-surface-elevated p-2 text-[11px] shadow-xl">
                 <p className="text-text-secondary">{metric.description}</p>
                 <p className="mt-1 text-text-muted">
-                  <span className="font-medium text-text-secondary">Why it matters:</span>{" "}
+                  <span className="text-text-secondary">Why it matters:</span>{" "}
                   {metric.interpretation}
                 </p>
                 <p className="mt-1 text-text-muted">
-                  <span className="font-medium text-text-secondary">How it is calculated:</span>{" "}
+                  <span className="text-text-secondary">Calculation:</span>{" "}
                   {methodology}
                 </p>
               </div>
             )}
           </div>
-          <span className="text-text-primary text-sm font-mono tabular-nums">
+          <span className="text-text-primary text-[11px] font-mono tabular-nums font-semibold">
             {formatNumber(metric.latestValue, metric.unit)}
           </span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           <Badge value={metric.change1W} label="1W" />
           <Badge value={metric.change1M} label="1M" />
         </div>
       </div>
+
+      {/* Chart */}
       <div style={{ height }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 2, right: 2, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id={`fill-${metric.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="var(--color-accent)" stopOpacity={0.15} />
-                <stop offset="100%" stopColor="var(--color-accent)" stopOpacity={0.02} />
+                <stop offset="5%" stopColor="#2962FF" stopOpacity={0.18} />
+                <stop offset="95%" stopColor="#2962FF" stopOpacity={0.01} />
               </linearGradient>
             </defs>
             <XAxis dataKey="date" hide />
             <YAxis
               domain={["auto", "auto"]}
-              tick={{ fill: "#64748B", fontSize: 10 }}
-              width={40}
+              tick={{ fill: "#434651", fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+              width={36}
               tickCount={3}
               tickFormatter={(v: number) => v.toFixed(1)}
             />
@@ -115,9 +118,9 @@ export default function MetricChart({ metric, height = 100 }: MetricChartProps) 
                 if (!payload || payload.length === 0) return null;
                 const val = payload[0].value as number;
                 return (
-                  <div className="bg-surface-elevated border border-border rounded px-2 py-1 text-xs">
+                  <div className="bg-surface-elevated border border-border-strong px-2 py-1 text-[10px] font-mono shadow-xl">
                     <div className="text-text-muted">{label}</div>
-                    <div className="text-text-primary font-mono">
+                    <div className="text-text-primary font-semibold">
                       {formatNumber(val, metric.unit)}
                     </div>
                   </div>
@@ -127,18 +130,19 @@ export default function MetricChart({ metric, height = 100 }: MetricChartProps) 
             {metric.thresholdLine !== undefined && (
               <ReferenceLine
                 y={metric.thresholdLine}
-                stroke="#F59E0B"
-                strokeDasharray="4 4"
-                strokeOpacity={0.5}
+                stroke="#FF9800"
+                strokeDasharray="3 3"
+                strokeOpacity={0.6}
               />
             )}
             <Area
               type="monotone"
               dataKey="value"
-              stroke="var(--color-accent)"
+              stroke="#2962FF"
               strokeWidth={1.5}
               fill={`url(#fill-${metric.id})`}
               isAnimationActive={false}
+              dot={false}
             />
           </AreaChart>
         </ResponsiveContainer>

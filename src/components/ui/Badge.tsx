@@ -13,16 +13,16 @@ interface BadgeProps {
 
 export default function Badge({ value, label, invert = false, size = "sm" }: BadgeProps) {
   const colorClass = getChangeColor(value, invert);
-  const arrow = value >= 0 ? "\u25B2" : "\u25BC";
-  const sizeClasses = size === "sm" ? "text-xs px-1.5 py-0.5" : "text-sm px-2 py-1";
+  const arrow = value >= 0 ? "▲" : "▼";
+  const sizeClasses = size === "sm" ? "text-[10px] px-1.5 py-0.5" : "text-xs px-2 py-1";
 
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-md bg-surface-elevated ${sizeClasses} font-mono tabular-nums`}
+      className={`inline-flex items-center gap-0.5 bg-surface-elevated border border-border ${sizeClasses} font-mono tabular-nums`}
     >
-      {label && <span className="text-text-muted">{label}</span>}
+      {label && <span className="text-text-muted mr-0.5">{label}</span>}
       <span className={colorClass}>
-        {arrow} {formatDelta(value)}
+        {arrow}&nbsp;{formatDelta(value)}
       </span>
     </span>
   );

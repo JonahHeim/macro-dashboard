@@ -1,48 +1,48 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #0B0E11;
-  --color-foreground: #F1F5F9;
-  --color-surface: #141922;
-  --color-surface-elevated: #1C2333;
-  --color-border: #2A3346;
-  --color-positive: #22C55E;
-  --color-negative: #EF4444;
-  --color-caution: #F59E0B;
-  --color-neutral: #6B7280;
-  --color-accent: #3B82F6;
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
-  --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
-  --font-mono: "SF Mono", "JetBrains Mono", "Menlo", "Monaco", "Consolas", monospace;
+  /* ── Bloomberg Terminal + TradingView palette ── */
+  --color-background: #131722;        /* TradingView canvas */
+  --color-foreground: #D1D4DC;        /* TradingView primary text */
+  --color-surface: #1E222D;           /* TradingView panel */
+  --color-surface-elevated: #2A2E39;  /* TradingView elevated panel */
+  --color-border: #2A2E39;            /* Panel borders */
+  --color-border-strong: #363A45;     /* Dividers / visible separators */
+  --color-positive: #26A69A;          /* TradingView bull green */
+  --color-negative: #EF5350;          /* TradingView bear red */
+  --color-caution: #FF9800;           /* Bloomberg amber/orange */
+  --color-neutral: #787B86;           /* TradingView muted */
+  --color-accent: #2962FF;            /* TradingView blue */
+  --color-text-primary: #D1D4DC;
+  --color-text-secondary: #9598A1;
+  --color-text-muted: #434651;
+
+  /* Terminal fonts */
+  --font-sans: "Trebuchet MS", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Smooth scrollbar for dark theme */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--color-background);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 3px;
-}
+/* Hairline scrollbar — terminal style */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--color-background); }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-neutral); }
 
-/* Recharts dark theme overrides */
+/* ── Recharts: TradingView-style overrides ── */
 .recharts-cartesian-axis-tick-value {
-  fill: #64748B !important;
-  font-size: 11px !important;
+  fill: #434651 !important;
+  font-size: 10px !important;
+  font-family: "JetBrains Mono", monospace !important;
 }
 .recharts-cartesian-grid line {
-  stroke: #1C2333 !important;
+  stroke: #2A2E39 !important;
 }
 .recharts-tooltip-wrapper {
   outline: none !important;
