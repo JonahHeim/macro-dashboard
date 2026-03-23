@@ -1,72 +1,226 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* ── Bloomberg Terminal + TradingView palette ── */
-  --color-background: #131722;        /* TradingView canvas */
-  --color-foreground: #D1D4DC;        /* TradingView primary text */
-  --color-surface: #1E222D;           /* TradingView panel */
-  --color-surface-elevated: #2A2E39;  /* TradingView elevated panel */
-  --color-border: #2A2E39;            /* Panel borders */
-  --color-border-strong: #363A45;     /* Dividers / visible separators */
-  --color-positive: #26A69A;          /* TradingView bull green */
-  --color-negative: #EF5350;          /* TradingView bear red */
-  --color-caution: #FF9800;           /* Bloomberg amber/orange */
-  --color-neutral: #787B86;           /* TradingView muted */
-  --color-accent: #2962FF;            /* TradingView blue */
-  --color-text-primary: #D1D4DC;
-  --color-text-secondary: #9598A1;
-  --color-text-muted: #434651;
+  --color-background: #070b11;
+  --color-foreground: #dbe2ea;
+  --color-surface: #0e1521;
+  --color-surface-elevated: #131d2c;
+  --color-surface-strong: #192638;
+  --color-border: #223146;
+  --color-border-strong: #314763;
+  --color-positive: #19b37a;
+  --color-negative: #ff5b57;
+  --color-caution: #ff9f1a;
+  --color-neutral: #6d7c91;
+  --color-accent: #3f7cff;
+  --color-accent-soft: #6ea8ff;
+  --color-text-primary: #e7edf5;
+  --color-text-secondary: #a6b4c8;
+  --color-text-muted: #65748a;
+  --font-sans: "Aptos Narrow", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  --font-mono: "IBM Plex Mono", "JetBrains Mono", "SF Mono", "Menlo", monospace;
+}
 
-  /* Terminal fonts */
-  --font-sans: "Trebuchet MS", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+:root {
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-background);
 }
 
 body {
-  background: var(--color-background);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(63, 124, 255, 0.14), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 159, 26, 0.1), transparent 26%),
+    linear-gradient(180deg, #09111b 0%, #070b11 55%, #06090f 100%);
   color: var(--color-foreground);
+  font-family: var(--font-sans);
   font-size: 13px;
+  letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
-/* Hairline scrollbar — terminal style */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(--color-background); }
-::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 0; }
-::-webkit-scrollbar-thumb:hover { background: var(--color-neutral); }
+body::before,
+body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
 
-/* ── Recharts: TradingView-style overrides ── */
+body::before {
+  background:
+    linear-gradient(rgba(80, 110, 150, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 110, 150, 0.08) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 90%);
+}
+
+body::after {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.025) 0,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  mix-blend-mode: soft-light;
+  opacity: 0.3;
+}
+
+a,
+button {
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+::selection {
+  background: rgba(63, 124, 255, 0.3);
+  color: var(--color-text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(8, 12, 18, 0.7);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #314763, #1a2638);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #49668e, #263953);
+}
+
 .recharts-cartesian-axis-tick-value {
-  fill: #434651 !important;
+  fill: #627287 !important;
   font-size: 10px !important;
-  font-family: "JetBrains Mono", monospace !important;
+  font-family: var(--font-mono) !important;
 }
+
 .recharts-cartesian-grid line {
-  stroke: #2A2E39 !important;
+  stroke: rgba(65, 89, 121, 0.35) !important;
 }
+
 .recharts-tooltip-wrapper {
   outline: none !important;
 }
 
-/* ── Entrance / transition animations ── */
+.dashboard-shell {
+  position: relative;
+  z-index: 1;
+}
+
+.terminal-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(49, 71, 99, 0.85);
+  background:
+    linear-gradient(180deg, rgba(23, 33, 49, 0.92), rgba(11, 18, 29, 0.95)),
+    linear-gradient(120deg, rgba(255, 159, 26, 0.04), transparent 32%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 20px 60px rgba(0, 0, 0, 0.32);
+}
+
+.terminal-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 159, 26, 0.09), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 30%);
+  pointer-events: none;
+}
+
+.terminal-header-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.terminal-data-chip {
+  border: 1px solid rgba(49, 71, 99, 0.92);
+  background: linear-gradient(180deg, rgba(18, 29, 44, 0.98), rgba(9, 15, 25, 0.98));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
 @keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0);   }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Value pop: re-triggers via React key change on data refresh */
 @keyframes valuePop {
-  from { opacity: 0.3; transform: scale(0.94) translateY(3px); }
-  to   { opacity: 1;   transform: scale(1)    translateY(0);   }
+  from {
+    opacity: 0.25;
+    transform: scale(0.97) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-/* Soft beacon pulse around the current regime dot */
 @keyframes beaconRing {
-  0%   { transform: scale(1);   opacity: 0.8; }
-  70%  { transform: scale(2.4); opacity: 0;   }
-  100% { transform: scale(2.4); opacity: 0;   }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
 }
 
-.animate-slide-up  { animation: slideUpFade 0.35s ease-out both; }
-.animate-value-pop { animation: valuePop   0.25s ease-out both; }
-.animate-beacon    { animation: beaconRing 1.8s ease-out infinite; }
+@keyframes statusSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUpFade 0.4s cubic-bezier(0.2, 0.7, 0, 1) both;
+}
+
+.animate-value-pop {
+  animation: valuePop 0.3s ease-out both;
+}
+
+.animate-beacon {
+  animation: beaconRing 1.8s ease-out infinite;
+}
+
+.animate-status-sweep {
+  animation: statusSweep 3.8s linear infinite;
+}

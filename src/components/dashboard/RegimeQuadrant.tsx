@@ -70,16 +70,24 @@ export default function RegimeQuadrant({
   return (
     <Card title="Macro Regime">
       <div className="relative w-full" style={{ height: 360 }}>
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between px-4">
+          <div className="terminal-data-chip px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">
+            Growth {currentGrowth.toFixed(2)}
+          </div>
+          <div className="terminal-data-chip px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">
+            Inflation {currentInflation.toFixed(2)}
+          </div>
+        </div>
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart margin={{ top: 18, right: 16, bottom: 24, left: 16 }}>
-            <CartesianGrid strokeDasharray="0" stroke="#2A2E39" />
+            <CartesianGrid strokeDasharray="0" stroke="rgba(65, 89, 121, 0.32)" />
 
             {QUADRANTS.map((q) => (
               <ReferenceArea
                 key={q.label}
                 x1={q.x1} x2={q.x2} y1={q.y1} y2={q.y2}
                 fill={q.fill}
-                fillOpacity={0.04}
+                fillOpacity={0.07}
               />
             ))}
 
@@ -88,28 +96,28 @@ export default function RegimeQuadrant({
               dataKey="x"
               domain={[-2, 2]}
               tickCount={5}
-              tick={{ fill: "#434651", fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
-              label={{ value: "Growth →", position: "insideBottom", offset: -12, fill: "#434651", fontSize: 10 }}
+              tick={{ fill: "#627287", fontSize: 10, fontFamily: "IBM Plex Mono, monospace" }}
+              label={{ value: "Growth →", position: "insideBottom", offset: -12, fill: "#627287", fontSize: 10 }}
             />
             <YAxis
               type="number"
               dataKey="y"
               domain={[-2, 2]}
               tickCount={5}
-              tick={{ fill: "#434651", fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
-              label={{ value: "Inflation →", angle: -90, position: "insideLeft", offset: 14, fill: "#434651", fontSize: 10 }}
+              tick={{ fill: "#627287", fontSize: 10, fontFamily: "IBM Plex Mono, monospace" }}
+              label={{ value: "Inflation →", angle: -90, position: "insideLeft", offset: 14, fill: "#627287", fontSize: 10 }}
             />
 
             {/* Axis crosshairs */}
-            <ReferenceLine x={0} stroke="#363A45" strokeWidth={1} />
-            <ReferenceLine y={0} stroke="#363A45" strokeWidth={1} />
+            <ReferenceLine x={0} stroke="#4d6483" strokeWidth={1} strokeOpacity={0.65} />
+            <ReferenceLine y={0} stroke="#4d6483" strokeWidth={1} strokeOpacity={0.65} />
 
             <Tooltip
               content={({ payload }) => {
                 if (!payload || payload.length === 0) return null;
                 const d = payload[0].payload as TrailPoint;
                 return (
-                  <div className="bg-surface-elevated border border-border-strong px-2 py-1 text-[10px] font-mono shadow-xl">
+                  <div className="terminal-panel px-3 py-2 text-[10px] font-mono shadow-2xl">
                     <div className="text-text-secondary">Growth:&nbsp;{d.x.toFixed(2)}</div>
                     <div className="text-text-secondary">Inflation:&nbsp;{d.y.toFixed(2)}</div>
                   </div>
@@ -120,13 +128,13 @@ export default function RegimeQuadrant({
             {/* Faded trail */}
             <Scatter data={trailData} isAnimationActive={false}>
               {trailData.map((pt, idx) => (
-                <Cell key={idx} fill="#787B86" fillOpacity={pt.opacity} r={3} />
+                <Cell key={idx} fill="#89a2c4" fillOpacity={pt.opacity} r={3} />
               ))}
             </Scatter>
 
             {/* Current point */}
             <Scatter data={currentData} isAnimationActive={false}>
-              <Cell fill="#2962FF" r={7} />
+              <Cell fill="#6ea8ff" r={7} />
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
@@ -148,8 +156,8 @@ export default function RegimeQuadrant({
         {QUADRANTS.map((q) => (
           <div
             key={q.label}
-            className={`${LABEL_POS[q.pos]} text-[10px] font-mono font-semibold uppercase tracking-wider pointer-events-none`}
-            style={{ color: `${LABEL_COLOR[q.pos]}80` }}
+            className={`${LABEL_POS[q.pos]} pointer-events-none font-mono text-[10px] font-semibold uppercase tracking-wider`}
+            style={{ color: `${LABEL_COLOR[q.pos]}99` }}
           >
             {q.label}
           </div>

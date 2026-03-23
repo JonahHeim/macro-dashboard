@@ -11,24 +11,25 @@ interface CardProps {
 
 export default function Card({ title, children, className = "", onInfoClick }: CardProps) {
   return (
-    <div className={`bg-surface border border-border ${className}`}>
+    <div className={`terminal-panel ${className}`}>
       {title && (
-        <div className="flex items-center justify-between px-3 py-2 border-b border-border">
-          <h3 className="text-text-muted text-[10px] font-semibold uppercase tracking-[0.12em]">
+        <div className="relative flex items-center justify-between border-b border-border-strong px-4 py-3">
+          <div className="absolute inset-y-0 left-0 w-px bg-caution/60" />
+          <h3 className="terminal-header-label pl-2 text-text-secondary">
             {title}
           </h3>
           {onInfoClick && (
             <button
               onClick={onInfoClick}
-              className="text-text-muted text-[10px] hover:text-text-secondary transition-colors leading-none"
+              className="terminal-data-chip px-2 py-1 text-[10px] leading-none text-text-muted hover:text-text-primary"
               aria-label="Info"
             >
-              ⓘ
+              INFO
             </button>
           )}
         </div>
       )}
-      <div className="p-3">
+      <div className="relative p-4">
         {children}
       </div>
     </div>

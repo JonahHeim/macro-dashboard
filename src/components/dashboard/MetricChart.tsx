@@ -49,45 +49,50 @@ export default function MetricChart({ metric, height = 100 }: MetricChartProps) 
     date: pt.date,
     value: pt.value,
   }));
+  const valueTone = metric.change1M > 0.01 ? "text-positive" : metric.change1M < -0.01 ? "text-negative" : "text-text-primary";
 
   return (
-    <div>
-      {/* Header row */}
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-text-secondary text-[11px] font-medium truncate">
-            {metric.name}
-          </span>
-          <div
-            className="relative flex-shrink-0"
-            onMouseEnter={() => setShowInfo(true)}
-            onMouseLeave={() => setShowInfo(false)}
-          >
-            <button
-              type="button"
-              className="text-text-muted text-[10px] leading-none hover:text-text-secondary"
-              aria-label={`About ${metric.name}`}
-              aria-expanded={showInfo}
+    <div className="terminal-data-chip overflow-hidden px-3 py-3">
+      <div className="mb-2 flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <span className="truncate text-[11px] font-medium text-text-secondary">
+              {metric.name}
+            </span>
+            <div
+              className="relative flex-shrink-0"
+              onMouseEnter={() => setShowInfo(true)}
+              onMouseLeave={() => setShowInfo(false)}
             >
-              ⓘ
-            </button>
-            {showInfo && (
-              <div className="absolute left-0 top-4 z-20 w-64 border border-border bg-surface-elevated p-2 text-[11px] shadow-xl">
-                <p className="text-text-secondary">{metric.description}</p>
-                <p className="mt-1 text-text-muted">
-                  <span className="text-text-secondary">Why it matters:</span>{" "}
-                  {metric.interpretation}
-                </p>
-                <p className="mt-1 text-text-muted">
-                  <span className="text-text-secondary">Calculation:</span>{" "}
-                  {methodology}
-                </p>
-              </div>
-            )}
+              <button
+                type="button"
+                className="text-[10px] leading-none text-text-muted hover:text-text-primary"
+                aria-label={`About ${metric.name}`}
+                aria-expanded={showInfo}
+              >
+                ⓘ
+              </button>
+              {showInfo && (
+                <div className="terminal-panel absolute left-0 top-4 z-20 w-72 p-3 text-[11px] shadow-2xl">
+                  <p className="text-text-secondary">{metric.description}</p>
+                  <p className="mt-2 text-text-muted">
+                    <span className="text-text-secondary">Why it matters:</span>{" "}
+                    {metric.interpretation}
+                  </p>
+                  <p className="mt-2 text-text-muted">
+                    <span className="text-text-secondary">Calculation:</span>{" "}
+                    {methodology}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-          <span className="text-text-primary text-[11px] font-mono tabular-nums font-semibold">
+          <div className={`mt-1 font-mono text-lg font-semibold tabular-nums ${valueTone}`}>
             {formatNumber(metric.latestValue, metric.unit)}
-          </span>
+          </div>
+          <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-text-muted">
+            {metric.category.replaceAll("_", " ")}
+          </div>
         </div>
         <div className="flex items-center gap-1">
           <Badge value={metric.change1W} label="1W" />
@@ -95,32 +100,34 @@ export default function MetricChart({ metric, height = 100 }: MetricChartProps) 
         </div>
       </div>
 
-      {/* Chart */}
+      <div className="mb-2 h-px bg-[linear-gradient(90deg,rgba(255,159,26,0.42),rgba(49,71,99,0.15),transparent)]" />
+
       <div style={{ height }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 2, right: 2, bottom: 0, left: 0 }}>
+          <AreaChart data={chartData} margin={{ top: 4, right: 0, bottom: 0, left: 0 }}>
             <defs>
               <linearGradient id={`fill-${metric.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2962FF" stopOpacity={0.18} />
-                <stop offset="95%" stopColor="#2962FF" stopOpacity={0.01} />
+                <stop offset="5%" stopColor="#3f7cff" stopOpacity={0.28} />
+                <stop offset="95%" stopColor="#3f7cff" stopOpacity={0.02} />
               </linearGradient>
             </defs>
             <XAxis dataKey="date" hide />
             <YAxis
               domain={["auto", "auto"]}
-              tick={{ fill: "#434651", fontSize: 10, fontFamily: "JetBrains Mono, monospace" }}
+              tick={{ fill: "#5f728b", fontSize: 10, fontFamily: "IBM Plex Mono, monospace" }}
               width={36}
               tickCount={3}
               tickFormatter={(v: number) => v.toFixed(1)}
             />
             <Tooltip
+              cursor={{ stroke: "rgba(255,255,255,0.08)", strokeWidth: 1 }}
               content={({ payload, label }) => {
                 if (!payload || payload.length === 0) return null;
                 const val = payload[0].value as number;
                 return (
-                  <div className="bg-surface-elevated border border-border-strong px-2 py-1 text-[10px] font-mono shadow-xl">
+                  <div className="terminal-panel px-3 py-2 text-[10px] font-mono shadow-2xl">
                     <div className="text-text-muted">{label}</div>
-                    <div className="text-text-primary font-semibold">
+                    <div className="mt-1 text-text-primary">
                       {formatNumber(val, metric.unit)}
                     </div>
                   </div>
@@ -130,22 +137,27 @@ export default function MetricChart({ metric, height = 100 }: MetricChartProps) 
             {metric.thresholdLine !== undefined && (
               <ReferenceLine
                 y={metric.thresholdLine}
-                stroke="#FF9800"
-                strokeDasharray="3 3"
-                strokeOpacity={0.6}
+                stroke="#ff9f1a"
+                strokeDasharray="4 4"
+                strokeOpacity={0.7}
               />
             )}
             <Area
               type="monotone"
               dataKey="value"
-              stroke="#2962FF"
-              strokeWidth={1.5}
+              stroke="#6ea8ff"
+              strokeWidth={1.8}
               fill={`url(#fill-${metric.id})`}
               isAnimationActive={false}
               dot={false}
             />
           </AreaChart>
         </ResponsiveContainer>
+      </div>
+
+      <div className="mt-2 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.14em] text-text-muted">
+        <span>range {chartData.length} pts</span>
+        <span>signal monitor</span>
       </div>
     </div>
   );

@@ -18,9 +18,9 @@ export default function Badge({ value, label, invert = false, size = "sm" }: Bad
 
   return (
     <span
-      className={`inline-flex items-center gap-0.5 bg-surface-elevated border border-border ${sizeClasses} font-mono tabular-nums`}
+      className={`inline-flex items-center gap-1 border border-border-strong bg-[linear-gradient(180deg,rgba(22,33,49,0.95),rgba(10,17,27,0.95))] ${sizeClasses} font-mono tabular-nums shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]`}
     >
-      {label && <span className="text-text-muted mr-0.5">{label}</span>}
+      {label && <span className="text-text-muted/90">{label}</span>}
       <span className={colorClass}>
         {arrow}&nbsp;{formatDelta(value)}
       </span>

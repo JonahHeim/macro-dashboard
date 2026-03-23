@@ -74,20 +74,20 @@ export default function CrossAssetHeatmap({ assets, macroRiskScore = 0, title = 
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border">
-              <th className="text-left text-text-muted text-xs font-medium uppercase tracking-wider py-2 pr-4">
+            <tr className="border-b border-border-strong">
+              <th className="py-3 pr-4 text-left font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">
                 Asset
               </th>
-              <th className="text-right text-text-muted text-xs font-medium uppercase tracking-wider py-2 px-3">
+              <th className="px-3 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">
                 Price
               </th>
-              <th className="text-center text-text-muted text-xs font-medium uppercase tracking-wider py-2 px-3">
+              <th className="px-3 py-3 text-center font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted">
                 Flag
               </th>
               {RETURN_KEYS.map((k) => (
                 <th
                   key={k}
-                  className="text-right text-text-muted text-xs font-medium uppercase tracking-wider py-2 px-3"
+                  className="px-3 py-3 text-right font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-text-muted"
                 >
                   {k}
                 </th>
@@ -100,31 +100,33 @@ export default function CrossAssetHeatmap({ assets, macroRiskScore = 0, title = 
                 {sectionIdx > 0 && (
                   <tr>
                     <td colSpan={7} className="py-1">
-                      <div className="border-t border-border/50" />
+                      <div className="border-t border-border-strong/60" />
                     </td>
                   </tr>
                 )}
                 <tr>
-                  <td colSpan={7} className="py-1 pr-4 text-xs font-medium uppercase tracking-wider text-text-muted">
-                    {grouped[sectionKey].label}
+                  <td colSpan={7} className="py-2 pr-4">
+                    <span className="terminal-data-chip inline-flex px-2 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-text-secondary">
+                      {grouped[sectionKey].label}
+                    </span>
                   </td>
                 </tr>
                 {grouped[sectionKey].assets.map((asset) => (
-                  <tr key={asset.id} className="hover:bg-surface-elevated transition-colors">
+                  <tr key={asset.id} className="border-b border-border/35 transition-colors hover:bg-white/[0.025]">
                     <td className="py-2 pr-4">
-                      <div className="text-text-primary text-sm">{asset.name}</div>
-                      <div className="text-text-muted text-xs">{asset.ticker}</div>
+                      <div className="text-sm text-text-primary">{asset.name}</div>
+                      <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted">{asset.ticker}</div>
                     </td>
-                    <td className="text-right py-2 px-3 text-text-secondary font-mono tabular-nums text-sm">
+                    <td className="px-3 py-2 text-right font-mono text-sm tabular-nums text-text-secondary">
                       {formatNumber(asset.currentPrice, "$")}
                     </td>
-                    <td className="text-center py-2 px-3">
+                    <td className="px-3 py-2 text-center">
                       {isDivergence(asset, macroRiskScore) ? (
-                        <span className="inline-flex items-center rounded border border-caution/40 bg-caution/10 px-1.5 py-0.5 text-[11px] text-caution">
+                        <span className="terminal-data-chip inline-flex items-center border-caution/45 bg-caution/10 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.14em] text-caution">
                           Divergence
                         </span>
                       ) : (
-                        <span className="text-text-muted text-[11px]">Aligned</span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">Aligned</span>
                       )}
                     </td>
                     {RETURN_KEYS.map((k) => {
@@ -133,8 +135,12 @@ export default function CrossAssetHeatmap({ assets, macroRiskScore = 0, title = 
                       return (
                         <td
                           key={k}
-                          className="text-right py-2 px-3 font-mono tabular-nums text-sm rounded"
-                          style={{ backgroundColor: style.bg, color: style.text }}
+                          className="px-3 py-2 text-right font-mono text-sm tabular-nums"
+                          style={{
+                            backgroundColor: style.bg,
+                            color: style.text,
+                            boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.03)",
+                          }}
                         >
                           {formatReturn(val)}
                         </td>
