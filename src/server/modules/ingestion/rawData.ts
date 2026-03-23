@@ -56,6 +56,7 @@ const FRED_SERIES: string[] = [
   "T5YIFR",
   "MICH",
   "DFEDTARU",
+  "T1YFF",
   "DGS2",
   "DGS10",
   "DGS3MO",
@@ -78,7 +79,7 @@ const FRED_SERIES: string[] = [
   "WPSFD49207",   // PPI Final Demand YoY
   "WPSFD4131",    // PPI Core Final Demand YoY (ex food & energy)
   "PCEPI",        // PCE Headline
-  "EXPINF1YR",    // Cleveland Fed 1Y Expected Inflation (replaces T1YIE proxy)
+  "EXPINF1YR",    // Cleveland Fed 1Y Expected Inflation
   // Growth
   "UMCSENT",      // Consumer Sentiment
   "DGORDER",      // Durable Goods Orders
@@ -92,6 +93,12 @@ const FRED_SERIES: string[] = [
   // Liquidity / Money
   "M2SL",         // M2 Money Supply
   "WRESBAL",      // Reserve Balances with Federal Reserve Banks
+  // Commodity fallbacks for metals coverage
+  "PCOPPUSDM",    // Copper
+  "PALUMUSDM",    // Aluminum
+  "PNICKUSDM",    // Nickel
+  "PZINCUSDM",    // Zinc
+  "PIORECRUSDM",  // Iron ore
 ];
 
 const STOOQ_SERIES: string[] = [

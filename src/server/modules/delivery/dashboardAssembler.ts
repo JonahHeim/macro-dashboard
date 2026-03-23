@@ -11,7 +11,7 @@ export async function assembleDashboardData(): Promise<DashboardData> {
   const normalized = normalizeMetrics(raw);
   const scores = buildCompositeScores(normalized);
   const regimeTrail = buildRegimeTrail(scores);
-  const heatmapAssets = await buildMarketHeatmapAssets();
+  const heatmapAssets = await buildMarketHeatmapAssets(raw.fred);
   const healthMessages = summarizeIngestionHealth(raw.diagnostics);
   const whatChanged = [
     ...healthMessages,

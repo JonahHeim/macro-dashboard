@@ -120,7 +120,7 @@ export const liquidityMetrics: MetricWithData[] = [
     category: "liquidity_credit",
     frequency: "daily",
     unit: "bps",
-    description: "Interbank funding stress proxy.",
+    description: "Interbank funding stress gauge.",
     interpretation: "Wider spreads imply tighter funding conditions.",
     series: tedSpreadSeries,
     latestValue: getLatestValue(tedSpreadSeries),

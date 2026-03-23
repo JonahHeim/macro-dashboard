@@ -141,7 +141,7 @@ export default function BigPictureBoard({
     getMetric(policyMetrics, "spread-3m10y"),
     getMetric(policyMetrics, "tips-10y"),
   ].filter((metric): metric is MetricWithData => Boolean(metric));
-  const rateProxyAssets = ["spx", "eq-china", "eq-germany", "eq-japan", "eq-uk"]
+  const bondAssets = ["shy", "ief", "tlt", "tip"]
     .map((id) => assetById(heatmapAssets, id))
     .filter((asset): asset is HeatmapAsset => Boolean(asset));
 
@@ -200,7 +200,7 @@ export default function BigPictureBoard({
   return (
     <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
       <Card title="1. Global Rates Panel">
-        <p className="mb-2 text-xs text-text-muted">US full curve + country-level rate sensitivity proxies (1M equity performance).</p>
+        <p className="mb-2 text-xs text-text-muted">US curve levels plus liquid Treasury instruments for market context.</p>
         <div className="space-y-2 text-sm">
           {rates.map((metric) => (
             <div key={metric.id} className="flex items-center justify-between rounded border border-border bg-surface-elevated px-3 py-2">
@@ -208,9 +208,9 @@ export default function BigPictureBoard({
               <span className="font-mono text-text-primary">{formatValue(metric.latestValue, metric.unit)}</span>
             </div>
           ))}
-          {rateProxyAssets.map((asset) => (
+          {bondAssets.map((asset) => (
             <div key={asset.id} className="flex items-center justify-between rounded border border-border bg-surface-elevated px-3 py-2">
-              <span className="text-text-secondary">{asset.name} (rate proxy)</span>
+              <span className="text-text-secondary">{asset.name}</span>
               <span className="font-mono text-text-primary">{asset.returns["1M"].toFixed(2)}%</span>
             </div>
           ))}

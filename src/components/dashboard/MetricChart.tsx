@@ -36,8 +36,11 @@ function buildMethodologyText(metric: MetricWithData): string {
   if (id.includes("breakeven") || id.includes("yield") || id.includes("fed-funds")) {
     return "Direct market/economic level from the source series; the plotted value is the latest observed reading.";
   }
-  if (id.includes("proxy")) {
-    return "Proxy metric: derived approximation built from related observable market/economic series.";
+  if (id.includes("real-policy") || id.includes("policy-path")) {
+    return "Derived spread metric calculated from two published source series to show market or policy stance.";
+  }
+  if (id.includes("surprise")) {
+    return "Step-change metric: difference between consecutive policy observations, shown in basis points.";
   }
 
   return "Source series level metric: latest reading from the normalized time series.";

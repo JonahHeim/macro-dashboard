@@ -69,8 +69,8 @@ function buildSyntheticMetric(
     name,
     category,
     unit: a.unit,
-    description: `${name} synthetic metric`,
-    interpretation: "Derived from two source metrics.",
+    description: `${name} derived from two primary series.`,
+    interpretation: "Calculated as the spread between two observed metrics.",
     series,
     latestValue: series.at(-1)?.value ?? 0,
     change1W: getChange(series, 5),
@@ -160,11 +160,11 @@ export function buildCompositeScores(metrics: NormalizedMetrics): CompositeScore
   );
 
   const realPolicy = buildSyntheticMetric(
-    "real-policy-proxy",
-    "Real Policy Proxy",
+    "real-policy-rate",
+    "Real Policy Rate",
     "policy_rates",
     getMetric(metrics.policy, "fed-funds"),
-    getMetric(metrics.inflation, "pce-core-yoy"),
+    getMetric(metrics.inflation, "expinf-1y"),
   );
 
   const policy = buildScore(

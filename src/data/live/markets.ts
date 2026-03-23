@@ -8,6 +8,7 @@ interface MarketConfig {
   ticker: string;
   category: HeatmapAsset["category"];
   stooqSymbols?: string[];
+  fredSeriesId?: string;
 }
 
 const MARKET_CONFIGS: MarketConfig[] = [
@@ -31,8 +32,8 @@ const MARKET_CONFIGS: MarketConfig[] = [
   { id: "eq-mexico", name: "Mexico Equity Market", ticker: "EWW", category: "equity", stooqSymbols: ["eww.us"] },
   { id: "eq-russia", name: "Russia Equity Market", ticker: "ERUS", category: "equity", stooqSymbols: ["erus.us", "rsx.us"] },
 
-  { id: "shy", name: "UST 2Y Proxy", ticker: "SHY", category: "fixed_income", stooqSymbols: ["shy.us"] },
-  { id: "ief", name: "UST 10Y Proxy", ticker: "IEF", category: "fixed_income", stooqSymbols: ["ief.us"] },
+  { id: "shy", name: "1-3Y Treasury ETF", ticker: "SHY", category: "fixed_income", stooqSymbols: ["shy.us"] },
+  { id: "ief", name: "7-10Y Treasury ETF", ticker: "IEF", category: "fixed_income", stooqSymbols: ["ief.us"] },
   { id: "tlt", name: "UST 20Y+ Treasury", ticker: "TLT", category: "fixed_income", stooqSymbols: ["tlt.us"] },
   { id: "agg", name: "Agg Bond", ticker: "AGG", category: "fixed_income", stooqSymbols: ["agg.us"] },
   { id: "bndx", name: "Intl Bond (Hedged)", ticker: "BNDX", category: "fixed_income", stooqSymbols: ["bndx.us"] },
@@ -55,13 +56,13 @@ const MARKET_CONFIGS: MarketConfig[] = [
   { id: "wti", name: "WTI Crude Oil", ticker: "CL", category: "commodity", stooqSymbols: ["cl.f"] },
   { id: "gold", name: "Gold", ticker: "XAUUSD", category: "commodity", stooqSymbols: ["xauusd"] },
   { id: "silver", name: "Silver", ticker: "XAGUSD", category: "commodity", stooqSymbols: ["xagusd", "si.f"] },
-  { id: "copper", name: "Copper", ticker: "HG", category: "commodity", stooqSymbols: ["hg.f"] },
+  { id: "copper", name: "Copper", ticker: "HG", category: "commodity", stooqSymbols: ["hg.f"], fredSeriesId: "PCOPPUSDM" },
   { id: "platinum", name: "Platinum", ticker: "PL", category: "commodity", stooqSymbols: ["pl.f"] },
   { id: "palladium", name: "Palladium", ticker: "PA", category: "commodity", stooqSymbols: ["pa.f"] },
-  { id: "aluminum", name: "Aluminum", ticker: "JJU", category: "commodity", stooqSymbols: ["jju.us", "ali.f"] },
-  { id: "nickel", name: "Nickel", ticker: "JJN", category: "commodity", stooqSymbols: ["jjn.us", "ni.f"] },
-  { id: "zinc", name: "Zinc", ticker: "ZN", category: "commodity", stooqSymbols: ["zn.f", "dbb.us"] },
-  { id: "iron-ore", name: "Iron Ore", ticker: "PICK", category: "commodity", stooqSymbols: ["pick.us"] },
+  { id: "aluminum", name: "Aluminum", ticker: "JJU", category: "commodity", stooqSymbols: ["jju.us", "ali.f"], fredSeriesId: "PALUMUSDM" },
+  { id: "nickel", name: "Nickel", ticker: "JJN", category: "commodity", stooqSymbols: ["jjn.us", "ni.f"], fredSeriesId: "PNICKUSDM" },
+  { id: "zinc", name: "Zinc", ticker: "ZN", category: "commodity", stooqSymbols: ["zn.f", "dbb.us"], fredSeriesId: "PZINCUSDM" },
+  { id: "iron-ore", name: "Iron Ore", ticker: "PICK", category: "commodity", stooqSymbols: ["pick.us"], fredSeriesId: "PIORECRUSDM" },
   { id: "btc", name: "Bitcoin", ticker: "BTCUSD", category: "crypto", stooqSymbols: ["btcusd"] },
 ];
 
@@ -96,50 +97,85 @@ export async function fetchStooqSeries(symbol: string): Promise<TimeSeriesPoint[
   return cleanSeries(data);
 }
 
-function getReturn(series: TimeSeriesPoint[], periodsBack: number): number {
-  if (series.length <= periodsBack) {
+function getPercentChangeSince(series: TimeSeriesPoint[], daysBack: number): number {
+  if (series.length < 2) {
     return 0;
   }
 
-  const latest = series.at(-1)?.value ?? 0;
-  const prior = series[series.length - 1 - periodsBack]?.value ?? latest;
-  if (prior === 0) {
+  const latestPoint = series.at(-1);
+  if (!latestPoint) {
     return 0;
   }
-  return round(((latest / prior) - 1) * 100, 2);
+
+  const cutoff = new Date(latestPoint.date);
+  cutoff.setDate(cutoff.getDate() - daysBack);
+
+  const priorPoint = [...series]
+    .reverse()
+    .find((point) => point.date < latestPoint.date && new Date(point.date) <= cutoff);
+
+  if (!priorPoint || priorPoint.value === 0) {
+    return 0;
+  }
+
+  return round(((latestPoint.value / priorPoint.value) - 1) * 100, 2);
 }
 
-export async function buildMarketHeatmapAssets(): Promise<HeatmapAsset[]> {
+function getYtdReturn(series: TimeSeriesPoint[]): number {
+  if (series.length < 2) {
+    return 0;
+  }
+
+  const latestPoint = series.at(-1);
+  if (!latestPoint) {
+    return 0;
+  }
+
+  const yearStart = `${latestPoint.date.slice(0, 4)}-01-01`;
+  const ytdBase = series.find((point) => point.date >= yearStart) ?? series[0];
+  if (!ytdBase || ytdBase.value === 0) {
+    return 0;
+  }
+
+  return round(((latestPoint.value / ytdBase.value) - 1) * 100, 2);
+}
+
+async function loadMarketSeries(
+  config: MarketConfig,
+  fredSeries: Record<string, TimeSeriesPoint[]>,
+): Promise<TimeSeriesPoint[]> {
+  for (const symbol of config.stooqSymbols ?? []) {
+    try {
+      const series = await fetchStooqSeries(symbol);
+      if (series.length > 0) {
+        return series;
+      }
+    } catch {
+      // Continue to the next free market source.
+    }
+  }
+
+  if (config.fredSeriesId) {
+    return cleanSeries(fredSeries[config.fredSeriesId] ?? []);
+  }
+
+  return [];
+}
+
+export async function buildMarketHeatmapAssets(
+  fredSeries: Record<string, TimeSeriesPoint[]> = {},
+): Promise<HeatmapAsset[]> {
   const results = await Promise.all(
     MARKET_CONFIGS.map(async (config) => {
-      if (!config.stooqSymbols || config.stooqSymbols.length === 0) {
-        return null;
-      }
-
       try {
-        let series: TimeSeriesPoint[] = [];
-        for (const symbol of config.stooqSymbols) {
-          try {
-            series = await fetchStooqSeries(symbol);
-            if (series.length > 0) {
-              break;
-            }
-          } catch {
-            // Continue to next fallback symbol.
-          }
-        }
+        const series = await loadMarketSeries(config, fredSeries);
         if (series.length === 0) return null;
 
         const currentPrice = round(series.at(-1)?.value ?? 0, 3);
-        const oneDay = getReturn(series, 1);
-        const oneWeek = getReturn(series, 5);
-        const oneMonth = getReturn(series, 22);
-
-        const yearStart = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
-        const ytdBase = series.find((point) => point.date >= yearStart) ?? series[0];
-        const ytd = ytdBase && ytdBase.value !== 0
-          ? round(((currentPrice / ytdBase.value) - 1) * 100, 2)
-          : 0;
+        const oneDay = getPercentChangeSince(series, 1);
+        const oneWeek = getPercentChangeSince(series, 7);
+        const oneMonth = getPercentChangeSince(series, 31);
+        const ytd = getYtdReturn(series);
 
         return {
           id: config.id,

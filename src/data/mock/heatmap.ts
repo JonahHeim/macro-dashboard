@@ -147,7 +147,7 @@ export const heatmapAssets: HeatmapAsset[] = [
   },
   {
     id: "shy",
-    name: "UST 2Y Proxy",
+    name: "1-3Y Treasury ETF",
     ticker: "SHY",
     category: "fixed_income",
     currentPrice: 82,
@@ -155,7 +155,7 @@ export const heatmapAssets: HeatmapAsset[] = [
   },
   {
     id: "ief",
-    name: "UST 10Y Proxy",
+    name: "7-10Y Treasury ETF",
     ticker: "IEF",
     category: "fixed_income",
     currentPrice: 95,
