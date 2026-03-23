@@ -1,16 +1,9 @@
 import TopNav from "@/components/app/TopNav";
-import Card from "@/components/ui/Card";
-import MetricChart from "@/components/dashboard/MetricChart";
+import PolicyLiquidityClient from "@/components/dashboard/PolicyLiquidityClient";
 import { dataProvider } from "@/data";
-
-const CURVE_IDS = new Set(["ust-2y", "ust-10y", "spread-2s10s", "spread-3m10y", "tips-10y", "fed-funds"]);
 
 export default async function PolicyLiquidityPage() {
   const data = await dataProvider.getDashboardData();
-  const policyScore = data.scores.find((score) => score.id === "policy");
-  const liquidityScore = data.scores.find((score) => score.id === "liquidity");
-
-  const policyMetrics = data.policyMetrics.filter((metric) => CURVE_IDS.has(metric.id));
 
   return (
     <div className="min-h-screen bg-background">
@@ -22,45 +15,7 @@ export default async function PolicyLiquidityPage() {
 
         <TopNav />
 
-        <Card title="Policy & Curve Metrics">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {policyMetrics.map((metric) => (
-              <MetricChart key={metric.id} metric={metric} />
-            ))}
-          </div>
-        </Card>
-
-        <Card title="Liquidity & Credit Metrics">
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {data.liquidityMetrics.map((metric) => (
-              <MetricChart key={metric.id} metric={metric} />
-            ))}
-          </div>
-        </Card>
-
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Card title="Policy Score Contributors">
-            <div className="space-y-2 text-sm">
-              {policyScore?.contributors.map((item) => (
-                <div key={item.metricId} className="flex items-center justify-between rounded-md border border-border bg-surface-elevated px-3 py-2">
-                  <span className="text-text-secondary">{item.metricName}</span>
-                  <span className="font-mono text-text-primary">{item.contribution.toFixed(2)}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card title="Liquidity Score Contributors">
-            <div className="space-y-2 text-sm">
-              {liquidityScore?.contributors.map((item) => (
-                <div key={item.metricId} className="flex items-center justify-between rounded-md border border-border bg-surface-elevated px-3 py-2">
-                  <span className="text-text-secondary">{item.metricName}</span>
-                  <span className="font-mono text-text-primary">{item.contribution.toFixed(2)}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
+        <PolicyLiquidityClient {...data} />
       </div>
     </div>
   );

@@ -54,7 +54,6 @@ const FRED_SERIES: string[] = [
   "CUSR0000SA0L2",
   "T2YIE",
   "T5YIFR",
-  "T1YIE",
   "MICH",
   "DFEDTARU",
   "DGS2",
@@ -65,7 +64,6 @@ const FRED_SERIES: string[] = [
   "BAMLH0A0HYM2",
   "BAMLC0A0CM",
   "NFCI",
-  "TEDRATE",
   "WALCL",
   "DRTSCILM",
   "SOFR",
@@ -73,14 +71,34 @@ const FRED_SERIES: string[] = [
   "IORB",
   "VIXCLS",
   "MOVEINDEX",
-  "SKEWINDX",
+  // Risk — real data replacing proxies
+  "STLFSI2",      // St. Louis Fed Financial Stress Index (replaces SKEWINDX)
+  "DRCCLACBS",    // Credit Card Delinquency Rate (replaces CDX-HY duplicate)
+  // Inflation
+  "WPSFD49207",   // PPI Final Demand YoY
+  "WPSFD4131",    // PPI Core Final Demand YoY (ex food & energy)
+  "PCEPI",        // PCE Headline
+  "EXPINF1YR",    // Cleveland Fed 1Y Expected Inflation (replaces T1YIE proxy)
+  // Growth
+  "UMCSENT",      // Consumer Sentiment
+  "DGORDER",      // Durable Goods Orders
+  "TCU",          // Capacity Utilization: Total Industry
+  "PAYEMS",       // Nonfarm Payrolls (total level, for MoM diff)
+  "JTSJOL",       // JOLTS Job Openings
+  // Policy / Curve
+  "DGS5",         // 5Y Treasury Yield
+  "DGS30",        // 30Y Treasury Yield
+  "MORTGAGE30US", // 30Y Mortgage Rate
+  // Liquidity / Money
+  "M2SL",         // M2 Money Supply
+  "WRESBAL",      // Reserve Balances with Federal Reserve Banks
 ];
 
 const STOOQ_SERIES: string[] = [
   "spy.us",
   "qqq.us",
   "iwm.us",
-  "acwx.us",
+  "acwx.us",   // international ex-US equity (for global breadth)
   "hyg.us",
   "ief.us",
   "xly.us",

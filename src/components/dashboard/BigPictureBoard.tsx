@@ -155,7 +155,7 @@ export default function BigPictureBoard({
   const growthFocus = [
     getMetric(growthMetrics, "ism-mfg-pmi"),
     getMetric(growthMetrics, "ism-svc-pmi"),
-    getMetric(growthMetrics, "gdp-nowcast-proxy"),
+    getMetric(growthMetrics, "gdp-nowcast"),
   ].filter((metric): metric is MetricWithData => Boolean(metric));
 
   const inflationFocus = [
@@ -168,15 +168,15 @@ export default function BigPictureBoard({
   const sentimentFocus = [
     getMetric(riskMetrics, "vix"),
     getMetric(riskMetrics, "move-index"),
-    getMetric(riskMetrics, "put-call-proxy"),
+    getMetric(riskMetrics, "stl-fsi"),
     getMetric(riskMetrics, "hyg-ief-ratio"),
   ].filter((metric): metric is MetricWithData => Boolean(metric));
 
   const creditFocus = [
     getMetric(liquidityMetrics, "hy-oas"),
     getMetric(liquidityMetrics, "ig-oas"),
-    getMetric(liquidityMetrics, "ted-spread"),
-    getMetric(liquidityMetrics, "fra-ois-proxy"),
+    getMetric(liquidityMetrics, "sofr-tbill-spread"),
+    getMetric(liquidityMetrics, "sofr-ff-spread"),
   ].filter((metric): metric is MetricWithData => Boolean(metric));
 
   const liquidityFocus = [

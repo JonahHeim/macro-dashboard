@@ -13,21 +13,14 @@ import Card from "@/components/ui/Card";
 import TopNav from "@/components/app/TopNav";
 import ScoreDrilldownModal from "./ScoreDrilldownModal";
 import { CompositeScore } from "@/types/scores";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 const RATES_IDS = new Set(["ust-2y", "ust-10y", "spread-2s10s", "spread-3m10y"]);
 
-export default function DashboardLayout({
-  scores,
-  regimeTrail,
-  growthMetrics,
-  inflationMetrics,
-  policyMetrics,
-  liquidityMetrics,
-  riskMetrics,
-  heatmapAssets,
-  educationalNotes,
-  whatChanged = [],
-}: DashboardData) {
+export default function DashboardLayout(initialData: DashboardData) {
+  const { data, lastUpdated, isRefreshing } = useDashboardData(initialData);
+  const { scores, regimeTrail, growthMetrics, inflationMetrics, policyMetrics, liquidityMetrics, riskMetrics, heatmapAssets, educationalNotes, whatChanged = [] } = data;
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedScore, setSelectedScore] = useState<CompositeScore | null>(null);
 
@@ -42,18 +35,44 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-[1920px] mx-auto px-4 py-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-text-primary font-semibold text-xl">Macro Dashboard</h1>
+      <div className="max-w-[1920px] mx-auto px-3 py-3">
+        {/* Terminal header bar */}
+        <div className="flex items-center justify-between py-2 border-b border-border-strong mb-0">
+          <div className="flex items-center gap-3">
+            <span className="text-caution font-mono font-bold text-sm tracking-widest uppercase">
+              Macro Terminal
+            </span>
+            <span className="text-border-strong">│</span>
+            <span className="text-text-muted text-[11px] font-mono flex items-center gap-1.5">
+              {isRefreshing ? (
+                <>
+                  {/* Amber pulse when refreshing */}
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-caution opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-caution" />
+                  </span>
+                  <span className="animate-pulse text-caution">REFRESHING...</span>
+                </>
+              ) : (
+                <>
+                  {/* Green steady pulse = live data */}
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-positive opacity-40" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
+                  </span>
+                  DATA AS OF {lastUpdated.toLocaleTimeString()}
+                </>
+              )}
+            </span>
+          </div>
           <button
             onClick={() => setDrawerOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface transition-colors text-sm"
+            className="flex items-center gap-1.5 px-3 py-1 border border-border text-text-muted hover:text-text-secondary hover:border-border-strong transition-colors text-[11px] font-mono uppercase tracking-wider"
             aria-label="Open educational panel"
           >
             <svg
-              width="18"
-              height="18"
+              width="14"
+              height="14"
               viewBox="0 0 18 18"
               fill="none"
               stroke="currentColor"
@@ -67,23 +86,25 @@ export default function DashboardLayout({
             <span className="hidden sm:inline">Learn</span>
           </button>
         </div>
-        <div className="mb-4">
+
+        {/* Tab navigation */}
+        <div className="mb-3">
           <TopNav />
         </div>
 
         {/* Dashboard grid */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
           {/* 1. KPI strip */}
           <KPIStrip scores={scores} onScoreClick={setSelectedScore} />
 
           {/* 1b. What changed summary */}
           {whatChanged.length > 0 && (
             <Card title="What Changed">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5">
                 {whatChanged.slice(0, 3).map((item) => (
                   <div
                     key={item}
-                    className="rounded-md border border-border bg-surface-elevated px-3 py-2 text-xs text-text-secondary"
+                    className="border border-border bg-surface-elevated px-2 py-1.5 text-[11px] text-text-secondary font-mono"
                   >
                     {item}
                   </div>
@@ -93,7 +114,7 @@ export default function DashboardLayout({
           )}
 
           {/* 2. Regime + Rates */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             <RegimeQuadrant
               regimeTrail={regimeTrail}
               currentGrowth={growthScore?.value ?? 0}
@@ -103,7 +124,7 @@ export default function DashboardLayout({
           </div>
 
           {/* 3. Growth + Inflation */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
             <GrowthPanel metrics={growthMetrics} />
             <InflationPanel metrics={inflationMetrics} />
           </div>
