@@ -32,9 +32,9 @@ INGESTION_JOB_TOKEN=...`}
           <ul className="space-y-2 text-sm text-text-secondary">
             <li><span className="font-mono text-text-primary">/api/dashboard/summary</span></li>
             <li><span className="font-mono text-text-primary">/api/scores/latest</span></li>
-            <li><span className="font-mono text-text-primary">/api/scores/history?score=growth&range=1y</span></li>
+            <li><span className="font-mono text-text-primary">/api/scores/history?score=growth&range=3y</span></li>
             <li><span className="font-mono text-text-primary">/api/heatmap?horizons=1d,1w,1m,ytd</span></li>
-            <li><span className="font-mono text-text-primary">/api/series/ust-10y?range=1y</span></li>
+            <li><span className="font-mono text-text-primary">/api/series/ust-10y?range=max</span></li>
             <li><span className="font-mono text-text-primary">/api/jobs/ingest?mode=manual</span></li>
             <li><span className="font-mono text-text-primary">/api/persistence/snapshots?limit=20</span></li>
           </ul>

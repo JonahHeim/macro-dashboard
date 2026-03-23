@@ -5,6 +5,7 @@ describe("apiRanges", () => {
   it("defaults to 1y for unsupported ranges", () => {
     expect(parseRange("invalid")).toBe("1y");
     expect(parseRange(null)).toBe("1y");
+    expect(parseRange("all")).toBe("max");
   });
 
   it("parses and normalizes horizons", () => {
@@ -20,7 +21,10 @@ describe("apiRanges", () => {
       { date: "2025-12-31", value: 4 },
     ];
 
-    expect(filterSeriesByRange(series, "1m")).toEqual([{ date: "2025-12-31", value: 4 }]);
-    expect(filterSeriesByRange(series, "all")).toEqual(series);
+    expect(filterSeriesByRange(series, "3m")).toEqual([{ date: "2025-12-31", value: 4 }]);
+    expect(filterSeriesByRange(series, "6m")).toEqual([
+      { date: "2025-12-31", value: 4 },
+    ]);
+    expect(filterSeriesByRange(series, "max")).toEqual(series);
   });
 });

@@ -1,25 +1,36 @@
 import { TimeSeriesPoint } from "@/types/metrics";
 
-export type RangeKey = "1m" | "3m" | "1y" | "3y" | "all";
+export type RangeKey = "3m" | "6m" | "1y" | "3y" | "max";
+
+export const RANGE_OPTIONS: ReadonlyArray<{ key: RangeKey; label: string }> = [
+  { key: "3m", label: "3M" },
+  { key: "6m", label: "6M" },
+  { key: "1y", label: "1Y" },
+  { key: "3y", label: "3Y" },
+  { key: "max", label: "MAX" },
+];
 
 export function parseRange(value: string | null): RangeKey {
-  if (value === "1m" || value === "3m" || value === "1y" || value === "3y" || value === "all") {
+  if (value === "3m" || value === "6m" || value === "1y" || value === "3y" || value === "max") {
     return value;
+  }
+  if (value === "all") {
+    return "max";
   }
   return "1y";
 }
 
 function daysForRange(range: RangeKey): number | null {
   switch (range) {
-    case "1m":
-      return 31;
     case "3m":
       return 93;
+    case "6m":
+      return 186;
     case "1y":
       return 366;
     case "3y":
       return 1096;
-    case "all":
+    case "max":
       return null;
     default:
       return 366;
