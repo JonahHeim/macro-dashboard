@@ -1,11 +1,14 @@
 import { promises as fs } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { DashboardData } from "@/data/types";
 import { MetricWithData } from "@/types/metrics";
 import { persistToPostgres, markRunFailed } from "@/server/persistence/adapters/postgresRepository";
 import { cacheJson, readCachedJson } from "@/server/cache/redisCache";
 
-const DATA_DIR = path.join(process.cwd(), ".macro-persistence");
+const DATA_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), "macro-persistence")
+  : path.join(process.cwd(), ".macro-persistence");
 const SNAPSHOT_FILE = path.join(DATA_DIR, "score-snapshots.json");
 const SERIES_FILE = path.join(DATA_DIR, "series-store.json");
 const INGESTION_LOG_FILE = path.join(DATA_DIR, "ingestion-log.json");
