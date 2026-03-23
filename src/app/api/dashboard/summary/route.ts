@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { dataProvider } from "@/data";
 
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
