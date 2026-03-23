@@ -2,6 +2,7 @@
 
 import { DashboardData } from "@/data/types";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { formatUtcTimestamp } from "@/lib/formatting";
 import { heatmapAssets as mockHeatmapAssets } from "@/data/mock/heatmap";
 import Card from "@/components/ui/Card";
 import CrossAssetHeatmap from "./CrossAssetHeatmap";
@@ -42,7 +43,7 @@ export default function MetalsClient(initialData: DashboardData) {
         {isRefreshing ? (
           <span className="animate-pulse">Refreshing…</span>
         ) : (
-          <>Updated {lastUpdated.toLocaleString()}</>
+          <>Updated {formatUtcTimestamp(data.capturedAt)}</>
         )}
       </p>
 

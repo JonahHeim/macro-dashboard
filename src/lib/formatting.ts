@@ -29,6 +29,15 @@ export function formatDelta(value: number): string {
   return sign + value.toFixed(2);
 }
 
+export function formatUtcTimestamp(isoDate: string): string {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) {
+    return isoDate;
+  }
+
+  return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
+}
+
 export function formatRelativeTime(isoDate: string): string {
   const now = new Date();
   const date = new Date(isoDate);

@@ -20,6 +20,7 @@ export async function GET() {
         liquidityMetrics: data.liquidityMetrics,
         riskMetrics: data.riskMetrics,
         heatmapAssets: data.heatmapAssets,
+        educationalNotes: data.educationalNotes,
       },
     });
   } catch (error) {

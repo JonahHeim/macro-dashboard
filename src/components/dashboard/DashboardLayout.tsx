@@ -14,7 +14,7 @@ import TopNav from "@/components/app/TopNav";
 import ScoreDrilldownModal from "./ScoreDrilldownModal";
 import { CompositeScore } from "@/types/scores";
 import { useDashboardData } from "@/hooks/useDashboardData";
-import { formatScore } from "@/lib/formatting";
+import { formatScore, formatUtcTimestamp } from "@/lib/formatting";
 
 const RATES_IDS = new Set(["ust-2y", "ust-10y", "spread-2s10s", "spread-3m10y"]);
 
@@ -131,7 +131,7 @@ export default function DashboardLayout(initialData: DashboardData) {
                 <div className="absolute inset-y-0 left-0 w-1 bg-caution/80" />
                 <div className="pl-3">
                   <div className="terminal-header-label text-text-muted">Snapshot</div>
-                  <div className="mt-2 text-lg font-medium text-text-primary">{lastUpdated.toLocaleString()}</div>
+                  <div className="mt-2 text-lg font-medium text-text-primary">{formatUtcTimestamp(data.capturedAt)}</div>
                   <div className="mt-3 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-text-muted">
                     {isRefreshing ? (
                       <>

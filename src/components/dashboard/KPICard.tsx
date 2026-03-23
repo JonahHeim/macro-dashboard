@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import { CompositeScore } from "@/types/scores";
-import { formatScore, formatRelativeTime } from "@/lib/formatting";
+import { formatScore, formatUtcTimestamp } from "@/lib/formatting";
 import { getScoreColor, getScoreColorClass } from "@/lib/colors";
 import Badge from "@/components/ui/Badge";
 
@@ -72,7 +72,7 @@ export default function KPICard({ score, onClick }: KPICardProps) {
               <Badge value={score.change1M} label="1M" />
             </div>
             <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.14em] text-text-muted">
-              <span>last print {formatRelativeTime(score.lastUpdated)}</span>
+              <span>last print {formatUtcTimestamp(score.lastUpdated)}</span>
               <span className="h-1 w-1 rounded-full bg-border-strong" />
               <span>click for drilldown</span>
             </div>

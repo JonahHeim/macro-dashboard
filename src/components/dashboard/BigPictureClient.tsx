@@ -2,6 +2,7 @@
 
 import { DashboardData } from "@/data/types";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { formatUtcTimestamp } from "@/lib/formatting";
 import BigPictureBoard from "./BigPictureBoard";
 
 export default function BigPictureClient(initialData: DashboardData) {
@@ -13,7 +14,7 @@ export default function BigPictureClient(initialData: DashboardData) {
         {isRefreshing ? (
           <span className="animate-pulse">Refreshing…</span>
         ) : (
-          <>Updated {lastUpdated.toLocaleString()}</>
+          <>Updated {formatUtcTimestamp(data.capturedAt)}</>
         )}
       </p>
       <BigPictureBoard

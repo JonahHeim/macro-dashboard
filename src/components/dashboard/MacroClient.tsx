@@ -2,6 +2,7 @@
 
 import { DashboardData } from "@/data/types";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { formatUtcTimestamp } from "@/lib/formatting";
 import Card from "@/components/ui/Card";
 import MetricChart from "./MetricChart";
 
@@ -16,7 +17,7 @@ export default function MacroClient(initialData: DashboardData) {
         {isRefreshing ? (
           <span className="animate-pulse">Refreshing…</span>
         ) : (
-          <>Updated {lastUpdated.toLocaleString()}</>
+          <>Updated {formatUtcTimestamp(data.capturedAt)}</>
         )}
       </p>
 

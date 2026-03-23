@@ -26,7 +26,10 @@ export function useDashboardData(initialData: DashboardData): UseDashboardDataRe
 
         const json = await res.json();
         if (!cancelled && json.summary) {
-          setData(json.summary as DashboardData);
+          setData((prev) => ({
+            ...prev,
+            ...(json.summary as Partial<DashboardData>),
+          }));
         }
       } catch {
         // Keep prerendered snapshot if the refresh request fails.
