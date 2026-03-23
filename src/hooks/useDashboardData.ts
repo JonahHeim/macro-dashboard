@@ -42,6 +42,7 @@ export function useDashboardData(
   }
 
   useEffect(() => {
+    void refresh();
     intervalRef.current = setInterval(refresh, pollIntervalMs);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
