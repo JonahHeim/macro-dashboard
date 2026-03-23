@@ -16,7 +16,7 @@ export async function fetchFredSeries(
   }
 
   const response = await fetch(`${FRED_GRAPH_CSV}?${params.toString()}`, {
-    next: { revalidate: 3600 },
+    next: { revalidate: 86400 },
   });
 
   if (!response.ok) {

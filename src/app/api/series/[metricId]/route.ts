@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { dataProvider } from "@/data";
 import { filterSeriesByRange, parseRange } from "@/lib/apiRanges";
 
+export const revalidate = 86400;
+
 interface RouteContext {
   params: Promise<{ metricId: string }>;
 }
@@ -26,7 +28,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     }
 
     return NextResponse.json({
-      asOf: new Date().toISOString(),
+      asOf: data.capturedAt,
       metric: {
         id: metric.id,
         name: metric.name,

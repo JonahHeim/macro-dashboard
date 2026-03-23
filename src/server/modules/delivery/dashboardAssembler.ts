@@ -20,6 +20,7 @@ export async function assembleDashboardData(): Promise<DashboardData> {
   ];
 
   return {
+    capturedAt: raw.capturedAt,
     scores,
     regimeTrail,
     growthMetrics: normalized.growth,

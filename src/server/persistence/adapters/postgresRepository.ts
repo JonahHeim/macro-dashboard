@@ -22,7 +22,7 @@ export async function persistToPostgres(runKey: string, data: DashboardData): Pr
   }
 
   const client = await clientPool.connect();
-  const capturedAt = new Date().toISOString();
+  const capturedAt = data.capturedAt;
 
   try {
     await client.query("BEGIN");

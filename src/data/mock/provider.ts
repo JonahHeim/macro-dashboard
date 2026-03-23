@@ -13,6 +13,7 @@ import { educationalNotes } from "./educational";
 export class MockDataProvider implements DashboardDataProvider {
   async getDashboardData() {
     return {
+      capturedAt: new Date().toISOString(),
       scores: mockScores,
       regimeTrail,
       growthMetrics,

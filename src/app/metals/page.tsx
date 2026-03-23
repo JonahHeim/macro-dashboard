@@ -2,6 +2,8 @@ import TopNav from "@/components/app/TopNav";
 import MetalsClient from "@/components/dashboard/MetalsClient";
 import { dataProvider } from "@/data";
 
+export const revalidate = 86400;
+
 export default async function MetalsPage() {
   const data = await dataProvider.getDashboardData();
 

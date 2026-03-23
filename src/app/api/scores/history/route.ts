@@ -3,6 +3,8 @@ import { dataProvider } from "@/data";
 import { ScoreId } from "@/types/scores";
 import { filterSeriesByRange, parseRange } from "@/lib/apiRanges";
 
+export const revalidate = 86400;
+
 const SCORE_IDS: ScoreId[] = ["growth", "inflation", "policy", "liquidity", "risk_sentiment"];
 
 function parseScoreId(value: string | null): ScoreId {
@@ -17,11 +19,15 @@ export async function GET(request: NextRequest) {
     const scoreId = parseScoreId(request.nextUrl.searchParams.get("score"));
     const range = parseRange(request.nextUrl.searchParams.get("range"));
 
-    const score = await dataProvider.getScore(scoreId);
+    const data = await dataProvider.getDashboardData();
+    const score = data.scores.find((item) => item.id === scoreId);
+    if (!score) {
+      throw new Error(`Score not found: ${scoreId}`);
+    }
     const history = filterSeriesByRange(score.history, range);
 
     return NextResponse.json({
-      asOf: new Date().toISOString(),
+      asOf: data.capturedAt,
       score: {
         id: score.id,
         name: score.name,

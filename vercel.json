@@ -2,15 +2,7 @@
   "crons": [
     {
       "path": "/api/jobs/ingest?mode=daily",
-      "schedule": "5 11 * * 1-5"
-    },
-    {
-      "path": "/api/jobs/ingest?mode=weekly",
-      "schedule": "15 12 * * 6"
-    },
-    {
-      "path": "/api/jobs/ingest?mode=monthly",
-      "schedule": "30 13 1 * *"
+      "schedule": "5 11 * * *"
     }
   ]
 }

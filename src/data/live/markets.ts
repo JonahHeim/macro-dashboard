@@ -67,7 +67,7 @@ const MARKET_CONFIGS: MarketConfig[] = [
 
 export async function fetchStooqSeries(symbol: string): Promise<TimeSeriesPoint[]> {
   const url = `https://stooq.com/q/d/l/?s=${encodeURIComponent(symbol)}&i=d`;
-  const response = await fetch(url, { next: { revalidate: 900 } });
+  const response = await fetch(url, { next: { revalidate: 86400 } });
   if (!response.ok) {
     throw new Error(`Stooq request failed for ${symbol}: ${response.status}`);
   }

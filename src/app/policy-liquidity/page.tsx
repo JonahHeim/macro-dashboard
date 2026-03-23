@@ -2,6 +2,8 @@ import TopNav from "@/components/app/TopNav";
 import PolicyLiquidityClient from "@/components/dashboard/PolicyLiquidityClient";
 import { dataProvider } from "@/data";
 
+export const revalidate = 86400;
+
 export default async function PolicyLiquidityPage() {
   const data = await dataProvider.getDashboardData();
 

@@ -58,9 +58,9 @@ export default function DashboardLayout(initialData: DashboardData) {
                   {/* Green steady pulse = live data */}
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-positive opacity-40" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-positive" />
                   </span>
-                  DATA AS OF {lastUpdated.toLocaleTimeString()}
+                  DATA AS OF {lastUpdated.toLocaleString()}
                 </>
               )}
             </span>

@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { dataProvider } from "@/data";
 import { HorizonKey, parseHorizons } from "@/lib/apiRanges";
 
+export const revalidate = 86400;
+
 export async function GET(request: NextRequest) {
   try {
+    const data = await dataProvider.getDashboardData();
     const horizons = parseHorizons(request.nextUrl.searchParams.get("horizons"));
-    const assets = await dataProvider.getHeatmapData();
+    const assets = data.heatmapAssets;
 
     const filteredAssets = assets.map((asset) => {
       const returns: Partial<Record<HorizonKey, number>> = {};
@@ -24,7 +27,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json({
-      asOf: new Date().toISOString(),
+      asOf: data.capturedAt,
       horizons,
       assets: filteredAssets,
     });

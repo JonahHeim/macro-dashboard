@@ -4,6 +4,7 @@ import { HeatmapAsset } from "@/types/heatmap";
 import { EducationalNote } from "@/types/educational";
 
 export interface DashboardData {
+  capturedAt: string;
   scores: CompositeScore[];
   regimeTrail: RegimePoint[];
   growthMetrics: MetricWithData[];
@@ -17,7 +18,7 @@ export interface DashboardData {
 }
 
 export interface DashboardDataProvider {
-  getDashboardData(): Promise<DashboardData>;
+  getDashboardData(options?: { refresh?: boolean }): Promise<DashboardData>;
   getScores(): Promise<CompositeScore[]>;
   getScore(id: ScoreId): Promise<CompositeScore>;
   getMetricsByCategory(category: MetricCategory): Promise<MetricWithData[]>;

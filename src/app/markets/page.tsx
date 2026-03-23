@@ -2,6 +2,8 @@ import TopNav from "@/components/app/TopNav";
 import MarketsClient from "@/components/dashboard/MarketsClient";
 import { dataProvider } from "@/data";
 
+export const revalidate = 86400;
+
 export default async function MarketsPage() {
   const data = await dataProvider.getDashboardData();
 

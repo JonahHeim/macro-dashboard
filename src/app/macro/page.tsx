@@ -2,6 +2,8 @@ import TopNav from "@/components/app/TopNav";
 import MacroClient from "@/components/dashboard/MacroClient";
 import { dataProvider } from "@/data";
 
+export const revalidate = 86400;
+
 export default async function MacroPage() {
   const data = await dataProvider.getDashboardData();
 

@@ -16,7 +16,7 @@ export default function MacroClient(initialData: DashboardData) {
         {isRefreshing ? (
           <span className="animate-pulse">Refreshing…</span>
         ) : (
-          <>Updated {lastUpdated.toLocaleTimeString()}</>
+          <>Updated {lastUpdated.toLocaleString()}</>
         )}
       </p>
 

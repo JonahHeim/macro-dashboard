@@ -2,6 +2,8 @@ import TopNav from "@/components/app/TopNav";
 import Card from "@/components/ui/Card";
 import { dataProvider } from "@/data";
 
+export const revalidate = 86400;
+
 const DAILY_WORKFLOW = [
   "Read 5 KPI cards and regime quadrant position.",
   "Scan rates/curve + credit stress panel for red flags.",

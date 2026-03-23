@@ -13,7 +13,7 @@ export default function BigPictureClient(initialData: DashboardData) {
         {isRefreshing ? (
           <span className="animate-pulse">Refreshing…</span>
         ) : (
-          <>Updated {lastUpdated.toLocaleTimeString()}</>
+          <>Updated {lastUpdated.toLocaleString()}</>
         )}
       </p>
       <BigPictureBoard

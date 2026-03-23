@@ -3,12 +3,14 @@ import path from "node:path";
 import { DashboardData } from "@/data/types";
 import { MetricWithData } from "@/types/metrics";
 import { persistToPostgres, markRunFailed } from "@/server/persistence/adapters/postgresRepository";
-import { cacheJson } from "@/server/cache/redisCache";
+import { cacheJson, readCachedJson } from "@/server/cache/redisCache";
 
 const DATA_DIR = path.join(process.cwd(), ".macro-persistence");
 const SNAPSHOT_FILE = path.join(DATA_DIR, "score-snapshots.json");
 const SERIES_FILE = path.join(DATA_DIR, "series-store.json");
 const INGESTION_LOG_FILE = path.join(DATA_DIR, "ingestion-log.json");
+const DASHBOARD_FILE = path.join(DATA_DIR, "latest-dashboard.json");
+const DASHBOARD_CACHE_KEY = "macro:dashboard:full";
 
 interface StoredSnapshot {
   id: string;
@@ -53,7 +55,7 @@ function flattenMetrics(data: DashboardData): MetricWithData[] {
 export async function persistDashboardSnapshot(data: DashboardData): Promise<string> {
   await ensureStore();
 
-  const capturedAt = new Date().toISOString();
+  const capturedAt = data.capturedAt;
   const id = `${capturedAt.replace(/[:.]/g, "-")}`;
 
   const snapshots = await readJsonFile<StoredSnapshot[]>(SNAPSHOT_FILE, []);
@@ -84,6 +86,7 @@ export async function persistDashboardSnapshot(data: DashboardData): Promise<str
 
   const trimmedSnapshots = snapshots.slice(-1000);
   await writeJsonFile(SNAPSHOT_FILE, trimmedSnapshots);
+  await writeJsonFile(DASHBOARD_FILE, data);
 
   const metrics = flattenMetrics(data);
   const seriesStore = await readJsonFile<StoredSeriesPayload[]>(SERIES_FILE, []);
@@ -115,6 +118,7 @@ export async function persistDashboardSnapshot(data: DashboardData): Promise<str
     scores: data.scores,
     whatChanged: data.whatChanged ?? [],
   }, 1800);
+  await cacheJson(DASHBOARD_CACHE_KEY, data, 60 * 60 * 26);
 
   return id;
 }
@@ -137,4 +141,14 @@ export async function getLatestSnapshots(limit = 20): Promise<StoredSnapshot[]> 
   await ensureStore();
   const snapshots = await readJsonFile<StoredSnapshot[]>(SNAPSHOT_FILE, []);
   return snapshots.slice(-limit).reverse();
+}
+
+export async function getLatestDashboardSnapshot(): Promise<DashboardData | null> {
+  const cached = await readCachedJson<DashboardData>(DASHBOARD_CACHE_KEY);
+  if (cached) {
+    return cached;
+  }
+
+  await ensureStore();
+  return readJsonFile<DashboardData | null>(DASHBOARD_FILE, null);
 }

@@ -2,6 +2,8 @@ import TopNav from "@/components/app/TopNav";
 import BigPictureClient from "@/components/dashboard/BigPictureClient";
 import { dataProvider } from "@/data";
 
+export const revalidate = 86400;
+
 export default async function BigPicturePage() {
   const data = await dataProvider.getDashboardData();
 

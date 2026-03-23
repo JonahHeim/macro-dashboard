@@ -10,7 +10,7 @@ import { heatmapAssets as fallbackHeatmap } from "@/data/mock/heatmap";
 import { mockScores, regimeTrail as fallbackRegime } from "@/data/mock/scores";
 import { educationalNotes } from "@/data/mock/educational";
 import { assembleDashboardData } from "@/server/modules/delivery/dashboardAssembler";
-import { persistDashboardSnapshot, recordIngestionFailure } from "@/server/persistence/snapshotStore";
+import { getLatestDashboardSnapshot, persistDashboardSnapshot, recordIngestionFailure } from "@/server/persistence/snapshotStore";
 
 function fallbackDashboardData(reason: string, consecutiveFailures: number, lastSuccessAt: string | null) {
   const details = [`Live data unavailable. Showing fallback dataset.`, `Reason: ${reason}`];
@@ -22,6 +22,7 @@ function fallbackDashboardData(reason: string, consecutiveFailures: number, last
   }
 
   return {
+    capturedAt: lastSuccessAt ?? new Date().toISOString(),
     scores: mockScores,
     regimeTrail: fallbackRegime,
     growthMetrics: fallbackGrowth,
@@ -36,19 +37,28 @@ function fallbackDashboardData(reason: string, consecutiveFailures: number, last
 }
 
 export class LiveDataProvider implements DashboardDataProvider {
-  private snapshotPromise: ReturnType<typeof assembleDashboardData> | null = null;
+  private refreshPromise: ReturnType<typeof assembleDashboardData> | null = null;
   private consecutiveFailures = 0;
   private lastSuccessAt: string | null = null;
 
-  async getDashboardData() {
-    if (!this.snapshotPromise) {
-      this.snapshotPromise = assembleDashboardData();
+  async getDashboardData(options?: { refresh?: boolean }) {
+    if (!options?.refresh) {
+      const snapshot = await getLatestDashboardSnapshot();
+      if (snapshot) {
+        this.lastSuccessAt = snapshot.capturedAt;
+        return snapshot;
+      }
+    }
+
+    if (!this.refreshPromise) {
+      this.refreshPromise = assembleDashboardData();
     }
 
     try {
-      const data = await this.snapshotPromise;
-      this.lastSuccessAt = new Date().toISOString();
+      const data = await this.refreshPromise;
+      this.lastSuccessAt = data.capturedAt;
       this.consecutiveFailures = 0;
+      this.refreshPromise = null;
 
       try {
         await persistDashboardSnapshot(data);
@@ -60,12 +70,24 @@ export class LiveDataProvider implements DashboardDataProvider {
 
       return data;
     } catch (error) {
-      this.snapshotPromise = null;
+      this.refreshPromise = null;
       this.consecutiveFailures += 1;
       const reason = error instanceof Error ? error.message : String(error);
       const details = error instanceof Error && error.stack ? error.stack : reason;
       console.error(`[LiveDataProvider] assembleDashboardData failed: ${reason}`);
       void recordIngestionFailure(details);
+
+      const snapshot = await getLatestDashboardSnapshot();
+      if (snapshot) {
+        return {
+          ...snapshot,
+          whatChanged: [
+            ...(snapshot.whatChanged ?? []),
+            `Live refresh failed. Showing last saved snapshot from ${snapshot.capturedAt}.`,
+          ],
+        };
+      }
+
       return fallbackDashboardData(reason, this.consecutiveFailures, this.lastSuccessAt);
     }
   }
